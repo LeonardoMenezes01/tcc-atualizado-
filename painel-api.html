@@ -1,0 +1,3982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack — Sua evolução, registrada.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #0a0a09;
+      --bg2: #111110;
+      --bg3: #1a1a18;
+      --bg4: #222220;
+      --lime: #c8f53a;
+      --lime2: #a8d020;
+      --lime-dim: rgba(200, 245, 58, .1);
+      --lime-glow: rgba(200, 245, 58, .25);
+      --text: #f0ede6;
+      --text2: #9a9790;
+      --text3: #5a5853;
+      --border: rgba(255, 255, 255, .07);
+      --border2: rgba(255, 255, 255, .14);
+      --red: #ff5959;
+      --red-dim: rgba(255, 89, 89, .1);
+      --blue: #5ab0ff;
+      --blue-dim: rgba(90, 176, 255, .1);
+      --orange: #ffaa3b;
+      --orange-dim: rgba(255, 170, 59, .1);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --sans: 'Outfit', system-ui, sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+      --sidebar: 240px;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: .6;
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10, 10, 9, .8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .nav-logo {
+      font-family: var(--display);
+      font-size: 26px;
+      letter-spacing: 1px;
+      color: var(--text);
+      cursor: pointer
+    }
+
+    .nav-logo span {
+      color: var(--lime)
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .nav-btn {
+      padding: 7px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--sans);
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2);
+      transition: all .2s
+    }
+
+    .nav-btn:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: var(--bg3)
+    }
+
+    .nav-btn.primary {
+      background: var(--lime);
+      color: #0a0a09;
+      border-color: var(--lime);
+      font-weight: 700
+    }
+
+    .nav-btn.primary:hover {
+      background: var(--lime2);
+      border-color: var(--lime2)
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 4rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(200, 245, 58, .12) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .deco-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(200, 245, 58, .12);
+      pointer-events: none;
+      animation: spin linear infinite
+    }
+
+    .deco-circle:nth-child(1) {
+      width: 500px;
+      height: 500px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-duration: 40s
+    }
+
+    .deco-circle:nth-child(2) {
+      width: 700px;
+      height: 700px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-duration: 60s;
+      border-color: rgba(200, 245, 58, .06)
+    }
+
+    .deco-circle:nth-child(3) {
+      width: 300px;
+      height: 300px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-duration: 25s;
+      border-color: rgba(200, 245, 58, .18)
+    }
+
+    @keyframes spin {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg)
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg)
+      }
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp .8s .1s forwards
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(72px, 12vw, 140px);
+      line-height: .92;
+      letter-spacing: 2px;
+      color: var(--text);
+      margin-bottom: 1.75rem;
+      opacity: 0;
+      animation: fadeUp .8s .25s forwards
+    }
+
+    .hero-title .accent {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--lime)
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 300;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp .8s .4s forwards
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp .8s .55s forwards
+    }
+
+    .cta-btn {
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: all .2s;
+      border: none
+    }
+
+    .cta-primary {
+      background: var(--lime);
+      color: #0a0a09
+    }
+
+    .cta-primary:hover {
+      background: var(--lime2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--lime-glow)
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border2)
+    }
+
+    .cta-secondary:hover {
+      background: var(--bg3);
+      transform: translateY(-2px)
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 5rem;
+      opacity: 0;
+      animation: fadeUp .8s .7s forwards
+    }
+
+    .hero-stat-val {
+      font-family: var(--display);
+      font-size: 40px;
+      color: var(--lime);
+      line-height: 1
+    }
+
+    .hero-stat-lbl {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px
+    }
+
+    /* ── FEATURES ── */
+    .section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 1rem
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: .95;
+      letter-spacing: 1px;
+      margin-bottom: 3rem
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .feat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--lime-dim), transparent 70%);
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .feat-card:hover {
+      border-color: rgba(200, 245, 58, .25);
+      transform: translateY(-4px)
+    }
+
+    .feat-card:hover::before {
+      opacity: 1
+    }
+
+    .feat-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--lime-dim);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(200, 245, 58, .2)
+    }
+
+    .feat-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: .5rem
+    }
+
+    .feat-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    /* ── BENTO ── */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 16px;
+      margin-top: 1rem
+    }
+
+    .bento-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .bento-card.tall {
+      grid-row: span 2
+    }
+
+    .bento-card.wide {
+      grid-column: span 2
+    }
+
+    .bento-num {
+      font-family: var(--display);
+      font-size: 80px;
+      color: var(--lime);
+      line-height: 1;
+      opacity: .18;
+      position: absolute;
+      top: -10px;
+      right: 16px
+    }
+
+    .bento-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: .5rem;
+      position: relative
+    }
+
+    .bento-text {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      position: relative
+    }
+
+    .demo-bars {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .db-row {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .db-lbl {
+      font-size: 11px;
+      color: var(--text3);
+      width: 50px;
+      flex-shrink: 0
+    }
+
+    .db-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg4);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .db-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1.5s cubic-bezier(.16, 1, .3, 1)
+    }
+
+    .db-val {
+      font-size: 11px;
+      color: var(--text2);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .demo-chart {
+      margin-top: 1.25rem;
+      height: 70px;
+      position: relative
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: var(--lime);
+      border-radius: var(--radius-lg);
+      padding: 4rem 3rem;
+      text-align: center;
+      margin: 0 2rem 6rem;
+      max-width: 1060px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      overflow: hidden
+    }
+
+    .cta-banner::before {
+      content: 'FITTRACK';
+      position: absolute;
+      font-family: var(--display);
+      font-size: 200px;
+      color: rgba(0, 0, 0, .06);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: 10px
+    }
+
+    .cta-banner h2 {
+      font-family: var(--display);
+      font-size: clamp(40px, 6vw, 64px);
+      color: #0a0a09;
+      margin-bottom: 1rem;
+      position: relative
+    }
+
+    .cta-banner p {
+      font-size: 16px;
+      color: rgba(0, 0, 0, .6);
+      margin-bottom: 2rem;
+      position: relative
+    }
+
+    .cta-banner button {
+      padding: 14px 36px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--sans);
+      background: #0a0a09;
+      color: var(--lime);
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative
+    }
+
+    .cta-banner button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .3)
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    /* ══════════════════════════════
+       AUTH PAGES (login & cadastro)
+    ══════════════════════════════ */
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr
+    }
+
+    .auth-left {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 3rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--lime-dim) 0%, transparent 65%);
+      pointer-events: none
+    }
+
+    .auth-left-content {
+      position: relative;
+      max-width: 360px;
+      width: 100%
+    }
+
+    .auth-big-text {
+      font-family: var(--display);
+      font-size: clamp(64px, 8vw, 110px);
+      line-height: .9;
+      letter-spacing: 2px;
+      margin-bottom: 2rem
+    }
+
+    .auth-big-text span {
+      color: var(--lime)
+    }
+
+    .auth-pitch {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 2.5rem
+    }
+
+    .auth-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .auth-feat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text2)
+    }
+
+    .auth-feat-dot {
+      width: 22px;
+      height: 22px;
+      background: var(--lime-dim);
+      border: 1px solid rgba(200, 245, 58, .3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0
+    }
+
+    .auth-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 3rem
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 400px
+    }
+
+    .auth-box-title {
+      font-family: var(--display);
+      font-size: 40px;
+      letter-spacing: 1px;
+      margin-bottom: .5rem
+    }
+
+    .auth-box-sub {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 2rem
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3);
+      margin-bottom: 6px
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    .form-group input::placeholder {
+      color: var(--text3)
+    }
+
+    .form-group input:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px var(--lime-dim)
+    }
+
+    .form-group select {
+      cursor: pointer
+    }
+
+    .form-group select option {
+      background: var(--bg3)
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--sans);
+      background: var(--lime);
+      color: #0a0a09;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: 4px
+    }
+
+    .btn-submit:hover {
+      background: var(--lime2);
+      transform: translateY(-1px)
+    }
+
+    .btn-submit:active {
+      transform: scale(.99)
+    }
+
+    .btn-submit:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .auth-switch {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 1.25rem
+    }
+
+    .auth-switch a {
+      color: var(--lime);
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none
+    }
+
+    .auth-switch a:hover {
+      text-decoration: underline
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none
+    }
+
+    .alert.show {
+      display: block
+    }
+
+    .alert.success {
+      background: var(--lime-dim);
+      color: var(--lime);
+      border: 1px solid rgba(200, 245, 58, .3)
+    }
+
+    .alert.error {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(255, 89, 89, .3)
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.25rem 0;
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .strength-bar {
+      height: 3px;
+      border-radius: 100px;
+      background: var(--bg4);
+      margin-top: 6px;
+      overflow: hidden
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 100px;
+      transition: width .4s, background .4s
+    }
+
+    /* ══════════════════════════════
+       USER LIST (original)
+    ══════════════════════════════ */
+    #page-list {
+      padding: 6rem 2rem 3rem
+    }
+
+    .list-header {
+      max-width: 1060px;
+      margin: 0 auto 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap
+    }
+
+    .list-header-left h1 {
+      font-family: var(--display);
+      font-size: clamp(36px, 6vw, 60px);
+      letter-spacing: 1px;
+      line-height: .95
+    }
+
+    .list-header-left h1 span {
+      color: var(--lime)
+    }
+
+    .list-header-left p {
+      font-size: 14px;
+      color: var(--text2);
+      margin-top: .5rem
+    }
+
+    .list-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .search-input {
+      padding: 9px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      width: 220px;
+      transition: border-color .15s
+    }
+
+    .search-input::placeholder {
+      color: var(--text3)
+    }
+
+    .search-input:focus {
+      border-color: var(--lime)
+    }
+
+    .filter-select {
+      padding: 9px 12px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text2);
+      outline: none;
+      cursor: pointer
+    }
+
+    .filter-select option {
+      background: var(--bg2)
+    }
+
+    .list-container {
+      max-width: 1060px;
+      margin: 0 auto
+    }
+
+    .list-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 1.5rem
+    }
+
+    .lstat {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem
+    }
+
+    .lstat-val {
+      font-family: var(--display);
+      font-size: 32px;
+      color: var(--lime);
+      line-height: 1
+    }
+
+    .lstat-lbl {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .table-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    thead tr {
+      border-bottom: 1px solid var(--border)
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3)
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+      cursor: default
+    }
+
+    tbody tr:last-child {
+      border-bottom: none
+    }
+
+    tbody tr:hover {
+      background: var(--bg3)
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text2)
+    }
+
+    tbody td:first-child {
+      color: var(--text)
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--display);
+      flex-shrink: 0
+    }
+
+    .td-user {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .td-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text)
+    }
+
+    .td-email {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    .badge-role {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .role-admin {
+      background: var(--lime-dim);
+      color: var(--lime);
+      border: 1px solid rgba(200, 245, 58, .3)
+    }
+
+    .role-user {
+      background: rgba(255, 255, 255, .05);
+      color: var(--text3);
+      border: 1px solid var(--border)
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .status-active {
+      background: var(--lime-dim);
+      color: var(--lime)
+    }
+
+    .status-inactive {
+      background: var(--red-dim);
+      color: var(--red)
+    }
+
+    .status-dot-sm {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor
+    }
+
+    .action-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2)
+    }
+
+    .action-btn:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .action-btn.del {
+      color: var(--red);
+      border-color: rgba(255, 89, 89, .3)
+    }
+
+    .action-btn.del:hover {
+      background: var(--red-dim)
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 6px
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text3)
+    }
+
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 1rem;
+      opacity: .4
+    }
+
+    .empty-txt {
+      font-size: 14px
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    .page-btns {
+      display: flex;
+      gap: 4px
+    }
+
+    .page-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2);
+      transition: all .15s
+    }
+
+    .page-btn:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .page-btn.active {
+      background: var(--lime);
+      color: #0a0a09;
+      border-color: var(--lime);
+      font-weight: 700
+    }
+
+    /* ══════════════════════════════
+       TOAST
+    ══════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border2);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .5);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.16, 1, .3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1
+    }
+
+    .toast.success {
+      border-color: rgba(200, 245, 58, .4);
+      color: var(--lime)
+    }
+
+    .toast.error {
+      border-color: rgba(255, 89, 89, .4);
+      color: var(--red)
+    }
+
+    /* ══════════════════════════════
+       PERSONAL TRAINER PANEL
+    ══════════════════════════════ */
+    #page-personal {
+      padding: 0
+    }
+
+    .pt-app {
+      display: flex;
+      min-height: 100vh
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      overflow-y: auto
+    }
+
+    .sidebar-logo {
+      padding: 1.5rem 1.25rem 1rem;
+      font-family: var(--display);
+      font-size: 24px;
+      letter-spacing: 1px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .sidebar-logo span {
+      color: var(--lime)
+    }
+
+    .sidebar-logo small {
+      display: block;
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    .nav-section-lbl {
+      padding: .75rem 1rem .25rem;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--text3)
+    }
+
+    .pt-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .65rem 1rem;
+      margin: 2px .5rem;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .15s;
+      border: none;
+      background: none;
+      width: calc(100% - 1rem);
+      text-align: left;
+      font-family: var(--sans)
+    }
+
+    .pt-nav-item:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .pt-nav-item.active {
+      background: var(--lime-dim);
+      color: var(--lime);
+      border: 1px solid rgba(200, 245, 58, .2)
+    }
+
+    .pt-nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 1rem;
+      border-top: 1px solid var(--border)
+    }
+
+    .personal-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .75rem;
+      background: var(--bg3);
+      border-radius: var(--radius);
+      border: 1px solid var(--border)
+    }
+
+    .personal-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--lime-dim);
+      border: 1px solid rgba(200, 245, 58, .3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--display);
+      color: var(--lime);
+      flex-shrink: 0
+    }
+
+    .personal-name {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .personal-role {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 1px
+    }
+
+    /* PT Main */
+    .pt-main {
+      margin-left: var(--sidebar);
+      flex: 1;
+      padding: 2rem;
+      min-height: 100vh
+    }
+
+    .pt-page {
+      display: none;
+      animation: ptFadeIn .3s ease
+    }
+
+    .pt-page.active {
+      display: block
+    }
+
+    @keyframes ptFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .pt-page-header {
+      margin-bottom: 2rem
+    }
+
+    .pt-page-header h1 {
+      font-family: var(--display);
+      font-size: clamp(36px, 5vw, 56px);
+      letter-spacing: 1px;
+      line-height: .95
+    }
+
+    .pt-page-header h1 span {
+      color: var(--lime)
+    }
+
+    .pt-page-header p {
+      font-size: 14px;
+      color: var(--text2);
+      margin-top: .5rem
+    }
+
+    /* PT Stats */
+    .pt-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 1.75rem
+    }
+
+    .pt-stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s
+    }
+
+    .pt-stat-card:hover {
+      border-color: var(--border2)
+    }
+
+    .pt-stat-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, var(--lime-dim), transparent 70%);
+      pointer-events: none
+    }
+
+    .pt-stat-icon {
+      font-size: 20px;
+      margin-bottom: .75rem
+    }
+
+    .pt-stat-val {
+      font-family: var(--display);
+      font-size: 36px;
+      color: var(--lime);
+      line-height: 1
+    }
+
+    .pt-stat-lbl {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    /* Client Cards */
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px
+    }
+
+    .client-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      cursor: default;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .client-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--lime-dim), transparent 60%);
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .client-card:hover {
+      border-color: rgba(200, 245, 58, .2);
+      transform: translateY(-2px)
+    }
+
+    .client-card:hover::before {
+      opacity: 1
+    }
+
+    .client-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      position: relative
+    }
+
+    .client-avt {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--display);
+      flex-shrink: 0
+    }
+
+    .client-cname {
+      font-size: 16px;
+      font-weight: 600
+    }
+
+    .client-cmeta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    .client-cbadge {
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--lime-dim);
+      color: var(--lime);
+      border: 1px solid rgba(200, 245, 58, .25);
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .client-cbadge.blue {
+      background: var(--blue-dim);
+      color: var(--blue);
+      border-color: rgba(90, 176, 255, .25)
+    }
+
+    .client-cbadge.orange {
+      background: var(--orange-dim);
+      color: var(--orange);
+      border-color: rgba(255, 170, 59, .25)
+    }
+
+    .client-mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1rem
+    }
+
+    .cms-item {
+      background: var(--bg3);
+      border-radius: 8px;
+      padding: .6rem;
+      border: 1px solid var(--border)
+    }
+
+    .cms-val {
+      font-family: var(--display);
+      font-size: 20px;
+      color: var(--text);
+      line-height: 1
+    }
+
+    .cms-lbl {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    .client-prog-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px
+    }
+
+    .prog-bar {
+      height: 5px;
+      background: var(--bg4);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--lime);
+      transition: width .6s
+    }
+
+    .client-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 1rem;
+      position: relative;
+      flex-wrap: wrap
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2)
+    }
+
+    .btn-sm:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .btn-sm.lime {
+      background: var(--lime);
+      color: #0a0a09;
+      border-color: var(--lime)
+    }
+
+    .btn-sm.lime:hover {
+      background: var(--lime2)
+    }
+
+    .btn-sm.danger {
+      color: var(--red);
+      border-color: rgba(255, 89, 89, .3)
+    }
+
+    .btn-sm.danger:hover {
+      background: var(--red-dim)
+    }
+
+    /* Controls */
+    .pt-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem
+    }
+
+    .pt-search {
+      padding: 9px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s
+    }
+
+    .pt-search::placeholder {
+      color: var(--text3)
+    }
+
+    .pt-search:focus {
+      border-color: var(--lime)
+    }
+
+    .pt-filter {
+      padding: 9px 12px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text2);
+      outline: none;
+      cursor: pointer
+    }
+
+    .pt-filter option {
+      background: var(--bg2)
+    }
+
+    .btn-primary {
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--sans);
+      background: var(--lime);
+      color: #0a0a09;
+      border: none;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-primary:hover {
+      background: var(--lime2);
+      transform: translateY(-1px)
+    }
+
+    .btn-secondary {
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--sans);
+      background: none;
+      color: var(--text2);
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: ptFadeIn .25s ease
+    }
+
+    .modal-lg {
+      max-width: 720px
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--bg2);
+      z-index: 1
+    }
+
+    .modal-title {
+      font-family: var(--display);
+      font-size: 28px;
+      letter-spacing: 1px
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s
+    }
+
+    .modal-close:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .modal-body {
+      padding: 1.5rem
+    }
+
+    .mfg {
+      margin-bottom: 14px
+    }
+
+    .mfg label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3);
+      margin-bottom: 6px
+    }
+
+    .mfg input,
+    .mfg select,
+    .mfg textarea {
+      width: 100%;
+      padding: 11px 13px;
+      font-size: 14px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    .mfg textarea {
+      resize: vertical;
+      min-height: 80px
+    }
+
+    .mfg input::placeholder,
+    .mfg textarea::placeholder {
+      color: var(--text3)
+    }
+
+    .mfg input:focus,
+    .mfg select:focus,
+    .mfg textarea:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px var(--lime-dim)
+    }
+
+    .mfg select option {
+      background: var(--bg3)
+    }
+
+    .mrow2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end
+    }
+
+    /* Detail tabs */
+    .detail-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1.25rem
+    }
+
+    .detail-tab {
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2);
+      transition: all .15s;
+      font-family: var(--sans)
+    }
+
+    .detail-tab.active {
+      background: var(--lime-dim);
+      color: var(--lime);
+      border-color: rgba(200, 245, 58, .3)
+    }
+
+    .detail-panel {
+      display: none
+    }
+
+    .detail-panel.active {
+      display: block
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1rem
+    }
+
+    .info-box {
+      background: var(--bg3);
+      border-radius: var(--radius);
+      padding: 1rem;
+      border: 1px solid var(--border)
+    }
+
+    .info-box-val {
+      font-family: var(--display);
+      font-size: 28px;
+      color: var(--lime);
+      line-height: 1
+    }
+
+    .info-box-lbl {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 3px;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    /* Diet layout */
+    .diet-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      min-height: calc(100vh - 200px)
+    }
+
+    .diet-left {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .diet-left-hdr {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .diet-left-hdr h3 {
+      font-family: var(--display);
+      font-size: 20px;
+      letter-spacing: .5px;
+      margin-bottom: .5rem
+    }
+
+    .diet-cli-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .75rem 1rem;
+      cursor: pointer;
+      transition: background .15s;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .diet-cli-item:hover {
+      background: var(--bg3)
+    }
+
+    .diet-cli-item.active {
+      background: var(--lime-dim);
+      border-left: 3px solid var(--lime)
+    }
+
+    .diet-cli-name {
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    .diet-cli-goal {
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    .diet-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto
+    }
+
+    .diet-top-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem
+    }
+
+    .diet-client-title {
+      font-family: var(--display);
+      font-size: 30px;
+      letter-spacing: 1px
+    }
+
+    .diet-client-title span {
+      color: var(--lime)
+    }
+
+    .macro-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 1rem
+    }
+
+    .macro-box {
+      background: var(--bg3);
+      border-radius: var(--radius);
+      padding: .75rem;
+      border: 1px solid var(--border)
+    }
+
+    .macro-box-val {
+      font-family: var(--display);
+      font-size: 26px;
+      line-height: 1
+    }
+
+    .macro-box-lbl {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 3px;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .macro-bar-wrap {
+      height: 4px;
+      background: var(--bg4);
+      border-radius: 100px;
+      margin-top: 8px;
+      overflow: hidden
+    }
+
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width .6s
+    }
+
+    /* Meal cards */
+    .meal-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden
+    }
+
+    .meal-hdr {
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background .15s
+    }
+
+    .meal-hdr:hover {
+      background: var(--bg3)
+    }
+
+    .meal-hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .meal-name {
+      font-size: 15px;
+      font-weight: 600
+    }
+
+    .meal-kcal-lbl {
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    .meal-tog {
+      font-size: 12px;
+      color: var(--text3);
+      transition: transform .2s
+    }
+
+    .meal-tog.open {
+      transform: rotate(180deg)
+    }
+
+    .meal-body {
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      display: none
+    }
+
+    .meal-body.open {
+      display: block
+    }
+
+    .food-tbl {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .food-tbl th {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3);
+      text-align: left;
+      padding: .4rem .5rem;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .food-tbl td {
+      padding: .6rem .5rem;
+      font-size: 13px;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle
+    }
+
+    .food-tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    .food-tbl td:first-child {
+      color: var(--text);
+      font-weight: 500
+    }
+
+    .rm-food {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 89, 89, .3);
+      background: none;
+      color: var(--red);
+      cursor: pointer;
+      font-size: 11px;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .rm-food:hover {
+      background: var(--red-dim)
+    }
+
+    .add-food-row {
+      display: flex;
+      gap: 8px;
+      margin-top: .75rem;
+      flex-wrap: wrap
+    }
+
+    .food-srch-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 160px
+    }
+
+    .food-srch {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s
+    }
+
+    .food-srch:focus {
+      border-color: var(--lime)
+    }
+
+    .food-drop {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      margin-top: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none
+    }
+
+    .food-drop.open {
+      display: block
+    }
+
+    .food-opt {
+      padding: .6rem 1rem;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background .15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .food-opt:hover {
+      background: var(--bg4)
+    }
+
+    .food-opt-kcal {
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    .qty-inp {
+      width: 70px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      color: var(--text);
+      outline: none;
+      text-align: center
+    }
+
+    .qty-inp:focus {
+      border-color: var(--lime)
+    }
+
+    /* Protocols */
+    .protocols-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 1.5rem
+    }
+
+    .protocol-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .protocol-card:hover {
+      border-color: rgba(200, 245, 58, .3);
+      transform: translateY(-2px)
+    }
+
+    .ptag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .75rem
+    }
+
+    .ptag-emagrecimento {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(255, 89, 89, .25)
+    }
+
+    .ptag-hipertrofia {
+      background: var(--blue-dim);
+      color: var(--blue);
+      border: 1px solid rgba(90, 176, 255, .25)
+    }
+
+    .ptag-manutencao {
+      background: var(--orange-dim);
+      color: var(--orange);
+      border: 1px solid rgba(255, 170, 59, .25)
+    }
+
+    .ptag-definicao {
+      background: var(--lime-dim);
+      color: var(--lime);
+      border: 1px solid rgba(200, 245, 58, .25)
+    }
+
+    .pcard-name {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: .5px;
+      margin-bottom: .25rem
+    }
+
+    .pcard-desc {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 1rem;
+      line-height: 1.5
+    }
+
+    .pcard-stats {
+      display: flex;
+      gap: 1.25rem
+    }
+
+    .pstat-val {
+      font-family: var(--display);
+      font-size: 22px;
+      color: var(--lime)
+    }
+
+    .pstat-lbl {
+      font-size: 10px;
+      color: var(--text3)
+    }
+
+    .proto-editor {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem
+    }
+
+    .proto-editor-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      gap: 1rem;
+      flex-wrap: wrap
+    }
+
+    .proto-title-inp {
+      font-family: var(--display);
+      font-size: 30px;
+      letter-spacing: 1px;
+      background: none;
+      border: none;
+      color: var(--text);
+      outline: none;
+      border-bottom: 2px solid var(--border2);
+      padding: .25rem 0;
+      transition: border-color .15s;
+      max-width: 400px;
+      width: 100%
+    }
+
+    .proto-title-inp:focus {
+      border-color: var(--lime)
+    }
+
+    .proto-meal {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 10px
+    }
+
+    .proto-meal-hdr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .75rem 1rem;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .proto-meal-inp {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--sans);
+      background: none;
+      border: none;
+      color: var(--text);
+      outline: none;
+      border-bottom: 1px dashed var(--border2);
+      flex: 1;
+      padding: 2px 4px
+    }
+
+    .proto-meal-inp:focus {
+      border-color: var(--lime)
+    }
+
+    .proto-meal-body {
+      padding: .75rem 1rem
+    }
+
+    .proto-food-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px
+    }
+
+    .proto-food-name {
+      flex: 1;
+      color: var(--text)
+    }
+
+    .proto-food-qty {
+      width: 60px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-family: var(--sans);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      background: var(--bg4);
+      color: var(--text);
+      outline: none;
+      text-align: center
+    }
+
+    .proto-food-kcal {
+      width: 60px;
+      font-size: 11px;
+      color: var(--text3);
+      text-align: right
+    }
+
+    .assign-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-top: 1rem
+    }
+
+    .assign-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3);
+      margin-bottom: .75rem
+    }
+
+    .assign-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .assign-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border2);
+      background: none;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: var(--sans)
+    }
+
+    .assign-pill:hover {
+      background: var(--bg4);
+      color: var(--text)
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 100px
+    }
+
+    /* Responsive */
+    @media(max-width:900px) {
+      .features-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .bento {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .bento-card.wide {
+        grid-column: span 1
+      }
+
+      .bento-card.tall {
+        grid-row: span 1
+      }
+
+      .auth-page {
+        grid-template-columns: 1fr
+      }
+
+      .auth-left {
+        display: none
+      }
+
+      .list-stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .pt-stats-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .diet-layout {
+        grid-template-columns: 1fr
+      }
+
+      .diet-left {
+        display: none
+      }
+    }
+
+    @media(max-width:600px) {
+
+      .features-grid,
+      .bento {
+        grid-template-columns: 1fr
+      }
+
+      nav {
+        padding: 1rem
+      }
+
+      .hero-stats {
+        gap: 2rem
+      }
+
+      .list-stats {
+        grid-template-columns: 1fr 1fr
+      }
+
+      thead th:nth-child(3),
+      thead th:nth-child(4),
+      tbody td:nth-child(3),
+      tbody td:nth-child(4) {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div class="nav-logo" onclick="goTo('landing')">Fit<span>Track</span></div>
+    <div class="nav-links" id="nav-links">
+      <button class="nav-btn" onclick="goTo('login')">Entrar</button>
+      <button class="nav-btn primary" onclick="goTo('register')">Começar grátis</button>
+    </div>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-msg">Mensagem</span></div>
+
+  <!-- ══════════════════════════════════════
+     LANDING
+══════════════════════════════════════ -->
+  <div class="page active" id="page-landing">
+    <section class="hero">
+      <div class="deco-circle"></div>
+      <div class="deco-circle"></div>
+      <div class="deco-circle"></div>
+      <p class="hero-eyebrow">⚡ A plataforma que evolui com você</p>
+      <h1 class="hero-title">TRANSFORME<br>SEU <span class="accent">CORPO</span></h1>
+      <p class="hero-sub">Registre sua dieta, acompanhe macros, monitore seu peso e veja sua evolução dia a dia. Tudo em
+        um lugar.</p>
+      <div class="hero-ctas">
+        <button class="cta-btn cta-primary" onclick="goTo('register')">Criar conta grátis →</button>
+        <button class="cta-btn cta-secondary" onclick="goTo('list')">Ver demonstração</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">12+</div>
+          <div class="hero-stat-lbl">Usuários ativos</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">99.9%</div>
+          <div class="hero-stat-lbl">Satisfação</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">2.1kg</div>
+          <div class="hero-stat-lbl">Perda média / mês</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">O que você ganha</p>
+      <h2 class="section-title">TUDO QUE<br>VOCÊ PRECISA</h2>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">🍽</div>
+          <div class="feat-title">Diário alimentar</div>
+          <div class="feat-desc">Registre cada refeição com calorias, proteínas, carboidratos e gorduras em segundos.
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📈</div>
+          <div class="feat-title">Gráfico de evolução</div>
+          <div class="feat-desc">Veja sua curva de peso ao longo do tempo e compare com suas metas definidas.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">💧</div>
+          <div class="feat-title">Hidratação</div>
+          <div class="feat-desc">Acompanhe seu consumo de água com lembretes e metas personalizadas.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📏</div>
+          <div class="feat-title">Medidas corporais</div>
+          <div class="feat-desc">Registre cintura, quadril, braço e % de gordura para ver a real composição corporal.
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎯</div>
+          <div class="feat-title">Metas inteligentes</div>
+          <div class="feat-desc">Defina sua meta calórica ideal com base no seu objetivo: emagrecer, manter ou ganhar
+            massa.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🏆</div>
+          <div class="feat-title">Streak de consistência</div>
+          <div class="feat-desc">Mantenha sua sequência e ganhe conquistas por consistência na dieta e nos registros.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <p class="section-label">Como funciona</p>
+      <h2 class="section-title">SIMPLES,<br>PODEROSO</h2>
+      <div class="bento">
+        <div class="bento-card tall" style="background:linear-gradient(135deg,#111110,#181816)">
+          <div class="bento-num">01</div>
+          <div class="bento-title">Registre sua dieta diária</div>
+          <div class="bento-text">Adicione alimentos em segundos e veja seus macros em tempo real.</div>
+          <div class="demo-bars">
+            <div class="db-row">
+              <div class="db-lbl">Proteína</div>
+              <div class="db-track">
+                <div class="db-fill" style="width:78%;background:#5ab0ff"></div>
+              </div>
+              <div class="db-val">142g</div>
+            </div>
+            <div class="db-row">
+              <div class="db-lbl">Carb.</div>
+              <div class="db-track">
+                <div class="db-fill" style="width:65%;background:#ffaa3b"></div>
+              </div>
+              <div class="db-val">198g</div>
+            </div>
+            <div class="db-row">
+              <div class="db-lbl">Gordura</div>
+              <div class="db-track">
+                <div class="db-fill" style="width:52%;background:var(--lime)"></div>
+              </div>
+              <div class="db-val">52g</div>
+            </div>
+            <div class="db-row">
+              <div class="db-lbl">Água</div>
+              <div class="db-track">
+                <div class="db-fill" style="width:72%;background:#5affd4"></div>
+              </div>
+              <div class="db-val">1.8L</div>
+            </div>
+          </div>
+          <div
+            style="margin-top:1.5rem;padding:1rem;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:28px;font-family:var(--display);color:var(--lime)">1.840 <span
+                style="font-size:14px;color:var(--text3)">kcal hoje</span></div>
+            <div style="font-size:12px;color:var(--text3);margin-top:4px">92% da meta diária</div>
+            <div style="height:5px;background:var(--bg4);border-radius:100px;margin-top:8px;overflow:hidden">
+              <div style="height:100%;width:92%;background:var(--lime);border-radius:100px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-num">02</div>
+          <div class="bento-title">Acompanhe o peso</div>
+          <div class="bento-text">Registre diariamente e veja seu progresso em gráfico.</div>
+          <div class="demo-chart"><canvas id="bento-chart" height="65"></canvas></div>
+        </div>
+        <div class="bento-card" style="background:var(--lime);border-color:var(--lime)">
+          <div style="font-family:var(--display);font-size:64px;color:rgba(0,0,0,.15);line-height:1">−5.6</div>
+          <div style="font-family:var(--display);font-size:20px;color:#0a0a09;margin-top:-12px">kg em 60 dias</div>
+          <div style="font-size:13px;color:rgba(0,0,0,.5);margin-top:.5rem">Resultado médio com uso consistente</div>
+        </div>
+        <div class="bento-card wide">
+          <div class="bento-num">03</div>
+          <div class="bento-title">Evolução completa</div>
+          <div class="bento-text">Veja todas as suas métricas: peso, medidas, % gordura, IMC e mais. Compare períodos e
+            comemore cada conquista.</div>
+          <div style="display:flex;gap:12px;margin-top:1.25rem;flex-wrap:wrap">
+            <div
+              style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+              <div style="font-family:var(--display);font-size:26px;color:var(--lime)">72.4</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">kg atual</div>
+            </div>
+            <div
+              style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+              <div style="font-family:var(--display);font-size:26px;color:#5ab0ff">23.1</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">IMC</div>
+            </div>
+            <div
+              style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+              <div style="font-family:var(--display);font-size:26px;color:#ffaa3b">18.5</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">% gordura</div>
+            </div>
+            <div
+              style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+              <div style="font-family:var(--display);font-size:26px;color:var(--lime)">7 🔥</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">dias seguidos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-banner">
+      <h2>PRONTO PARA<br>EVOLUIR?</h2>
+      <p>Crie sua conta grátis e comece a acompanhar sua evolução hoje mesmo.</p>
+      <button onclick="goTo('register')">Criar conta grátis →</button>
+    </div>
+    <footer>FitTrack © 2025 · Feito para quem não para.</footer>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     CADASTRO
+══════════════════════════════════════ -->
+  <div class="page" id="page-register">
+    <div class="auth-page">
+      <div class="auth-left">
+        <div class="auth-left-content">
+          <div class="auth-big-text">CRIE<br>SUA<br><span>CONTA</span></div>
+          <p class="auth-pitch">Comece a registrar sua dieta e ver sua evolução em minutos. É grátis.</p>
+          <div class="auth-features">
+            <div class="auth-feat">
+              <div class="auth-feat-dot">✓</div>Diário alimentar ilimitado
+            </div>
+            <div class="auth-feat">
+              <div class="auth-feat-dot">✓</div>Gráfico de peso e evolução
+            </div>
+            <div class="auth-feat">
+              <div class="auth-feat-dot">✓</div>Controle de hidratação
+            </div>
+            <div class="auth-feat">
+              <div class="auth-feat-dot">✓</div>Registro de medidas corporais
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-box">
+          <div class="auth-box-title">CADASTRO</div>
+          <div class="auth-box-sub">Preencha os dados para criar sua conta</div>
+          <div class="alert" id="reg-alert"></div>
+          <div class="form-group"><label>Nome completo</label><input id="reg-nome" type="text" placeholder="Seu nome"
+              autocomplete="name" /></div>
+          <div class="form-group"><label>E-mail</label><input id="reg-email" type="email" placeholder="seu@email.com"
+              autocomplete="email" /></div>
+          <div class="form-group">
+            <label>Senha</label>
+            <input id="reg-senha" type="password" placeholder="Mínimo 6 caracteres"
+              oninput="checkStrength(this.value)" />
+            <div class="strength-bar">
+              <div class="strength-fill" id="strength-fill"></div>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group"><label>Peso (kg)</label><input id="reg-peso" type="number" step="0.1"
+                placeholder="Ex: 72.5" /></div>
+            <div class="form-group"><label>Altura (cm)</label><input id="reg-altura" type="number"
+                placeholder="Ex: 175" /></div>
+          </div>
+          <div class="form-group"><label>Objetivo</label>
+            <select id="reg-objetivo">
+              <option value="">Selecione...</option>
+              <option value="emagrecer">🔻 Emagrecer</option>
+              <option value="manter">⚖️ Manter peso</option>
+              <option value="ganhar">📈 Ganhar massa</option>
+              <option value="definir">⚡ Definir corpo</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Perfil</label>
+            <select id="reg-perfil">
+              <option value="usuario">Usuário</option>
+              <option value="admin">Administrador (Personal)</option>
+            </select>
+          </div>
+          <button class="btn-submit" id="btn-register" onclick="doRegister()">Criar conta →</button>
+          <div class="auth-switch">Já tem conta? <a onclick="goTo('login')">Entrar agora</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     LOGIN
+══════════════════════════════════════ -->
+  <div class="page" id="page-login">
+    <div class="auth-page">
+      <div class="auth-left">
+        <div class="auth-left-content">
+          <div class="auth-big-text">BEM<br>VINDO<br><span>BACK</span></div>
+          <p class="auth-pitch">Continue de onde parou. Seus registros e evolução estão esperando por você.</p>
+          <div class="auth-features">
+            <div class="auth-feat">
+              <div class="auth-feat-dot">↗</div>Veja seu progresso
+            </div>
+            <div class="auth-feat">
+              <div class="auth-feat-dot">+</div>Adicione registros de hoje
+            </div>
+            <div class="auth-feat">
+              <div class="auth-feat-dot">🎯</div>Acompanhe suas metas
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-box">
+          <div class="auth-box-title">ENTRAR</div>
+          <div class="auth-box-sub">Acesse sua conta FitTrack</div>
+          <div class="alert" id="login-alert"></div>
+          <div class="form-group"><label>E-mail</label><input id="login-email" type="email" placeholder="seu@email.com"
+              autocomplete="email" /></div>
+          <div class="form-group"><label>Senha</label><input id="login-senha" type="password" placeholder="Sua senha"
+              autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+          <div style="text-align:right;margin-bottom:1rem">
+            <a style="font-size:12px;color:var(--text3);cursor:pointer"
+              onclick="showToast('Link de recuperação enviado! (demo)','success')">Esqueceu a senha?</a>
+          </div>
+          <button class="btn-submit" id="btn-login" onclick="doLogin()">Entrar →</button>
+          <div class="form-divider">ou</div>
+          <div class="auth-switch">Não tem conta? <a onclick="goTo('register')">Cadastre-se grátis</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     LISTA DE USUÁRIOS
+══════════════════════════════════════ -->
+  <div class="page" id="page-list">
+    <div class="list-header">
+      <div class="list-header-left">
+        <h1>USUÁRIOS<br><span>CADASTRADOS</span></h1>
+        <p>Gerencie todos os membros da plataforma</p>
+      </div>
+      <div class="list-controls">
+        <input class="search-input" id="search-input" placeholder="🔍 Buscar usuário..." oninput="filterUsers()" />
+        <select class="filter-select" id="filter-perfil" onchange="filterUsers()">
+          <option value="">Todos os perfis</option>
+          <option value="admin">Admin</option>
+          <option value="usuario">Usuário</option>
+        </select>
+        <button class="nav-btn primary" onclick="goTo('register')">+ Novo</button>
+      </div>
+    </div>
+    <div class="list-container">
+      <div class="list-stats">
+        <div class="lstat">
+          <div class="lstat-val" id="ls-total">0</div>
+          <div class="lstat-lbl">Total de usuários</div>
+        </div>
+        <div class="lstat">
+          <div class="lstat-val" id="ls-admin">0</div>
+          <div class="lstat-lbl">Admins</div>
+        </div>
+        <div class="lstat">
+          <div class="lstat-val" id="ls-active">0</div>
+          <div class="lstat-lbl">Ativos</div>
+        </div>
+        <div class="lstat">
+          <div class="lstat-val" id="ls-new">0</div>
+          <div class="lstat-lbl">Novos hoje</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Perfil</th>
+              <th>Objetivo</th>
+              <th>Status</th>
+              <th>Cadastro</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="user-table-body">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-icon">👤</div>
+                  <div class="empty-txt">Nenhum usuário cadastrado ainda.</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination" style="display:none">
+          <span id="pag-info">Mostrando 0 usuários</span>
+          <div class="page-btns" id="pag-btns"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAINEL DO PERSONAL
+══════════════════════════════════════ -->
+  <div class="page" id="page-personal" style="padding:0">
+    <div class="pt-app">
+      <aside class="sidebar">
+        <div class="sidebar-logo">Fit<span>Track</span><small>Personal Pro</small></div>
+        <div class="nav-section-lbl">Principal</div>
+        <button class="pt-nav-item active" onclick="ptGoTo('dashboard')" id="ptnav-dashboard"><span
+            class="pt-nav-icon">📊</span>Dashboard</button>
+        <button class="pt-nav-item" onclick="ptGoTo('clients')" id="ptnav-clients"><span
+            class="pt-nav-icon">👥</span>Clientes</button>
+        <div class="nav-section-lbl">Ferramentas</div>
+        <button class="pt-nav-item" onclick="ptGoTo('diet')" id="ptnav-diet"><span class="pt-nav-icon">🍽</span>Montagem
+          de Dieta</button>
+        <button class="pt-nav-item" onclick="ptGoTo('protocols')" id="ptnav-protocols"><span
+            class="pt-nav-icon">📋</span>Protocolos</button>
+        <div class="nav-section-lbl">Conta</div>
+        <button class="pt-nav-item" onclick="doLogout()"><span class="pt-nav-icon">🚪</span>Sair</button>
+        <div class="sidebar-bottom">
+          <div class="personal-card">
+            <div class="personal-avatar" id="pt-avatar">PT</div>
+            <div>
+              <div class="personal-name" id="pt-name">Personal</div>
+              <div class="personal-role">Personal Trainer</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <main class="pt-main">
+
+        <!-- Dashboard -->
+        <div class="pt-page active" id="ptpage-dashboard">
+          <div class="pt-page-header">
+            <h1 id="dash-greeting">BOM DIA 👋</h1>
+            <p>Aqui está o resumo dos seus clientes hoje.</p>
+          </div>
+          <div class="pt-stats-grid">
+            <div class="pt-stat-card">
+              <div class="pt-stat-icon">👥</div>
+              <div class="pt-stat-val" id="ds-total">0</div>
+              <div class="pt-stat-lbl">Clientes ativos</div>
+            </div>
+            <div class="pt-stat-card">
+              <div class="pt-stat-icon">🎯</div>
+              <div class="pt-stat-val" id="ds-metas">0</div>
+              <div class="pt-stat-lbl">Metas no prazo</div>
+            </div>
+            <div class="pt-stat-card">
+              <div class="pt-stat-icon">📋</div>
+              <div class="pt-stat-val" id="ds-diets">0</div>
+              <div class="pt-stat-lbl">Dietas montadas</div>
+            </div>
+            <div class="pt-stat-card">
+              <div class="pt-stat-icon">📉</div>
+              <div class="pt-stat-val" id="ds-loss">0kg</div>
+              <div class="pt-stat-lbl">Perda total acumulada</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+            <h2 style="font-family:var(--display);font-size:22px;letter-spacing:.5px">CLIENTES RECENTES</h2>
+            <button class="btn-secondary" onclick="ptGoTo('clients')">Ver todos →</button>
+          </div>
+          <div class="clients-grid" id="dash-clients-preview"></div>
+        </div>
+
+        <!-- Clients -->
+        <div class="pt-page" id="ptpage-clients">
+          <div class="pt-page-header">
+            <h1>MEUS<br><span>CLIENTES</span></h1>
+            <p>Gerencie e acompanhe a evolução de cada cliente</p>
+          </div>
+          <div class="pt-controls">
+            <input class="pt-search" id="clients-search" placeholder="🔍 Buscar cliente..." oninput="renderClients()"
+              style="width:220px" />
+            <select class="pt-filter" id="clients-filter" onchange="renderClients()">
+              <option value="">Todos os objetivos</option>
+              <option value="emagrecer">Emagrecer</option>
+              <option value="ganhar">Ganhar massa</option>
+              <option value="manter">Manter</option>
+              <option value="definir">Definir</option>
+            </select>
+            <button class="btn-primary" onclick="openAddClient()">+ Novo cliente</button>
+          </div>
+          <div class="clients-grid" id="clients-grid"></div>
+        </div>
+
+        <!-- Diet Builder -->
+        <div class="pt-page" id="ptpage-diet">
+          <div class="pt-page-header" style="margin-bottom:1rem">
+            <h1>MONTAGEM<br>DE <span>DIETA</span></h1>
+            <p>Monte e ajuste a dieta de cada cliente com precisão</p>
+          </div>
+          <div class="diet-layout">
+            <div class="diet-left">
+              <div class="diet-left-hdr">
+                <h3>CLIENTES</h3>
+                <input class="pt-search" id="diet-search" placeholder="🔍 Buscar..." oninput="renderDietClientList()"
+                  style="width:100%;font-size:12px;padding:7px 11px" />
+              </div>
+              <div id="diet-client-list" style="overflow-y:auto;flex:1"></div>
+            </div>
+            <div class="diet-right" id="diet-main-area">
+              <div
+                style="display:flex;align-items:center;justify-content:center;flex:1;flex-direction:column;gap:.5rem;color:var(--text3);padding:3rem">
+                <span style="font-size:48px;opacity:.3">🍽</span>
+                <div style="font-size:14px">Selecione um cliente</div>
+                <div style="font-size:12px;opacity:.6">para montar ou editar sua dieta</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Protocols -->
+        <div class="pt-page" id="ptpage-protocols">
+          <div class="pt-page-header">
+            <h1>PROTOCOLOS<br>DE <span>DIETA</span></h1>
+            <p>Carregue um protocolo base e edite para cada cliente</p>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap">
+            <button class="btn-primary" onclick="openLoadProtocol()">📂 Carregar protocolo</button>
+            <button class="btn-secondary" onclick="createBlankProtocol()">+ Novo em branco</button>
+          </div>
+          <h3 style="font-family:var(--display);font-size:20px;letter-spacing:.5px;margin-bottom:1rem">PROTOCOLOS SALVOS
+          </h3>
+          <div class="protocols-grid" id="protocols-grid"></div>
+          <div id="protocol-editor-wrap" style="display:none">
+            <h3 style="font-family:var(--display);font-size:20px;letter-spacing:.5px;margin-bottom:1rem">EDITOR DE
+              PROTOCOLO</h3>
+            <div class="proto-editor" id="protocol-editor"></div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Novo Cliente -->
+  <div class="modal-overlay" id="modal-add-client">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">NOVO CLIENTE</div><button class="modal-close"
+          onclick="closeModal('modal-add-client')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mfg"><label>Nome completo</label><input id="ac-nome" type="text" placeholder="Nome do cliente" />
+        </div>
+        <div class="mrow2">
+          <div class="mfg"><label>Idade</label><input id="ac-idade" type="number" placeholder="28" /></div>
+          <div class="mfg"><label>Sexo</label><select id="ac-sexo">
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select></div>
+        </div>
+        <div class="mrow2">
+          <div class="mfg"><label>Peso atual (kg)</label><input id="ac-peso" type="number" step="0.1"
+              placeholder="78.5" /></div>
+          <div class="mfg"><label>Altura (cm)</label><input id="ac-altura" type="number" placeholder="175" /></div>
+        </div>
+        <div class="mrow2">
+          <div class="mfg"><label>Peso meta (kg)</label><input id="ac-meta" type="number" step="0.1" placeholder="70" />
+          </div>
+          <div class="mfg"><label>Objetivo</label>
+            <select id="ac-objetivo">
+              <option value="emagrecer">🔻 Emagrecer</option>
+              <option value="ganhar">📈 Ganhar massa</option>
+              <option value="manter">⚖️ Manter peso</option>
+              <option value="definir">⚡ Definir</option>
+            </select>
+          </div>
+        </div>
+        <div class="mfg"><label>Meta calórica diária (kcal)</label><input id="ac-kcal" type="number"
+            placeholder="1800" /></div>
+        <div class="mfg"><label>Observações / Restrições</label><textarea id="ac-obs"
+            placeholder="Alergias, restrições, preferências..."></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('modal-add-client')">Cancelar</button>
+        <button class="btn-primary" onclick="saveClient()">Salvar cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Detalhe do Cliente -->
+  <div class="modal-overlay" id="modal-client-detail">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div class="modal-title" id="detail-title">CLIENTE</div><button class="modal-close"
+          onclick="closeModal('modal-client-detail')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-tabs">
+          <button class="detail-tab active" onclick="switchTab(0)">Dados</button>
+          <button class="detail-tab" onclick="switchTab(1)">Evolução de Peso</button>
+          <button class="detail-tab" onclick="switchTab(2)">Notas</button>
+        </div>
+        <div class="detail-panel active" id="dtab-0">
+          <div class="info-grid" id="detail-info-grid"></div>
+          <div
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:.5rem">
+            Progresso para a meta</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px">
+            <span id="detail-prog-lbl">—</span><span id="detail-prog-pct">—</span></div>
+          <div style="height:8px;background:var(--bg4);border-radius:100px;overflow:hidden">
+            <div id="detail-prog-fill"
+              style="height:100%;border-radius:100px;background:var(--lime);transition:width .6s;width:0%"></div>
+          </div>
+          <div id="detail-obs"
+            style="margin-top:1rem;padding:.75rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);font-size:13px;color:var(--text2)">
+          </div>
+        </div>
+        <div class="detail-panel" id="dtab-1">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:1rem">Registre o peso de hoje:</div>
+          <div style="display:flex;gap:8px;margin-bottom:1rem">
+            <input id="evo-peso" type="number" step="0.1" class="pt-search" placeholder="Peso hoje (kg)"
+              style="width:160px" />
+            <button class="btn-primary" onclick="addWeightEntry()">Registrar</button>
+          </div>
+          <div id="evo-history" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto">
+          </div>
+        </div>
+        <div class="detail-panel" id="dtab-2">
+          <div
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:.5rem">
+            Notas do personal</div>
+          <textarea
+            style="width:100%;min-height:120px;padding:12px;font-size:13px;font-family:var(--sans);border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg3);color:var(--text);outline:none;resize:vertical"
+            id="detail-notes" placeholder="Anotações, feedbacks, ajustes..." oninput="saveNotes()"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Carregar Protocolo -->
+  <div class="modal-overlay" id="modal-load-protocol">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">CARREGAR PROTOCOLO</div><button class="modal-close"
+          onclick="closeModal('modal-load-protocol')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">Escolha um protocolo base para editar e
+          personalizar:</p>
+        <div id="load-protocol-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ════════════════════════════
+    // DATA
+    // ════════════════════════════
+    const COLORS = ['#c8f53a', '#5ab0ff', '#ffaa3b', '#ff5959', '#5affd4', '#ff7eb3', '#c084fc', '#f97316'];
+    const OBJ_LABEL = { emagrecer: '🔻 Emagrecer', ganhar: '📈 Ganhar massa', manter: '⚖️ Manter', definir: '⚡ Definir' };
+
+    const FOOD_DB = [
+      { id: 1, name: 'Frango grelhado', unit: 'g', kcal100: 165, p: 31, c: 0, f: 3.6 },
+      { id: 2, name: 'Carne bovina magra', unit: 'g', kcal100: 215, p: 26, c: 0, f: 12 },
+      { id: 3, name: 'Atum em água', unit: 'g', kcal100: 116, p: 25, c: 0, f: 1 },
+      { id: 4, name: 'Tilápia', unit: 'g', kcal100: 128, p: 26, c: 0, f: 2.7 },
+      { id: 5, name: 'Ovos inteiros', unit: 'g', kcal100: 155, p: 13, c: 1.1, f: 11 },
+      { id: 6, name: 'Clara de ovo', unit: 'g', kcal100: 52, p: 11, c: 0.7, f: 0.2 },
+      { id: 7, name: 'Peito de peru', unit: 'g', kcal100: 135, p: 29, c: 0, f: 1 },
+      { id: 8, name: 'Whey protein', unit: 'g', kcal100: 370, p: 75, c: 10, f: 5 },
+      { id: 9, name: 'Cottage', unit: 'g', kcal100: 98, p: 11, c: 3.4, f: 4.3 },
+      { id: 10, name: 'Iogurte grego integral', unit: 'g', kcal100: 97, p: 9, c: 4, f: 5 },
+      { id: 11, name: 'Arroz branco cozido', unit: 'g', kcal100: 130, p: 2.7, c: 28, f: 0.3 },
+      { id: 12, name: 'Arroz integral cozido', unit: 'g', kcal100: 123, p: 2.7, c: 25, f: 1 },
+      { id: 13, name: 'Batata doce cozida', unit: 'g', kcal100: 90, p: 2, c: 21, f: 0.1 },
+      { id: 14, name: 'Mandioca cozida', unit: 'g', kcal100: 125, p: 1, c: 30, f: 0.3 },
+      { id: 15, name: 'Macarrão integral cozido', unit: 'g', kcal100: 142, p: 5, c: 27, f: 1.1 },
+      { id: 16, name: 'Pão integral', unit: 'g', kcal100: 247, p: 8, c: 41, f: 4.2 },
+      { id: 17, name: 'Aveia em flocos', unit: 'g', kcal100: 389, p: 17, c: 66, f: 7 },
+      { id: 18, name: 'Feijão cozido', unit: 'g', kcal100: 77, p: 5, c: 14, f: 0.5 },
+      { id: 19, name: 'Lentilha cozida', unit: 'g', kcal100: 116, p: 9, c: 20, f: 0.4 },
+      { id: 20, name: 'Quinoa cozida', unit: 'g', kcal100: 120, p: 4.4, c: 21, f: 2 },
+      { id: 21, name: 'Brócolis', unit: 'g', kcal100: 34, p: 2.8, c: 7, f: 0.4 },
+      { id: 22, name: 'Couve-flor', unit: 'g', kcal100: 25, p: 2, c: 5, f: 0.3 },
+      { id: 23, name: 'Espinafre', unit: 'g', kcal100: 23, p: 2.9, c: 3.6, f: 0.4 },
+      { id: 24, name: 'Alface', unit: 'g', kcal100: 15, p: 1.4, c: 2.9, f: 0.2 },
+      { id: 25, name: 'Tomate', unit: 'g', kcal100: 18, p: 0.9, c: 3.9, f: 0.2 },
+      { id: 26, name: 'Pepino', unit: 'g', kcal100: 16, p: 0.7, c: 3.6, f: 0.1 },
+      { id: 27, name: 'Cenoura', unit: 'g', kcal100: 41, p: 0.9, c: 10, f: 0.2 },
+      { id: 28, name: 'Abobrinha', unit: 'g', kcal100: 17, p: 1.2, c: 3.1, f: 0.3 },
+      { id: 29, name: 'Vagem', unit: 'g', kcal100: 31, p: 1.8, c: 7, f: 0.1 },
+      { id: 30, name: 'Azeite de oliva', unit: 'ml', kcal100: 884, p: 0, c: 0, f: 100 },
+      { id: 31, name: 'Abacate', unit: 'g', kcal100: 160, p: 2, c: 9, f: 15 },
+      { id: 32, name: 'Pasta de amendoim', unit: 'g', kcal100: 588, p: 25, c: 20, f: 50 },
+      { id: 33, name: 'Chia', unit: 'g', kcal100: 486, p: 17, c: 42, f: 31 },
+      { id: 34, name: 'Castanha-do-Pará', unit: 'g', kcal100: 659, p: 14, c: 12, f: 67 },
+      { id: 35, name: 'Nozes', unit: 'g', kcal100: 654, p: 15, c: 14, f: 65 },
+      { id: 36, name: 'Banana', unit: 'g', kcal100: 89, p: 1.1, c: 23, f: 0.3 },
+      { id: 37, name: 'Maçã', unit: 'g', kcal100: 52, p: 0.3, c: 14, f: 0.2 },
+      { id: 38, name: 'Laranja', unit: 'g', kcal100: 47, p: 0.9, c: 12, f: 0.1 },
+      { id: 39, name: 'Morango', unit: 'g', kcal100: 33, p: 0.7, c: 8, f: 0.3 },
+      { id: 40, name: 'Manga', unit: 'g', kcal100: 60, p: 0.8, c: 15, f: 0.4 },
+      { id: 41, name: 'Leite integral', unit: 'ml', kcal100: 61, p: 3.2, c: 4.8, f: 3.3 },
+      { id: 42, name: 'Queijo mussarela', unit: 'g', kcal100: 280, p: 21, c: 2.2, f: 22 },
+      { id: 43, name: 'Grão de bico cozido', unit: 'g', kcal100: 164, p: 8.9, c: 27, f: 2.6 },
+      { id: 44, name: 'Batata inglesa cozida', unit: 'g', kcal100: 87, p: 1.9, c: 20, f: 0.1 },
+      { id: 45, name: 'Mel', unit: 'g', kcal100: 304, p: 0.3, c: 82, f: 0 },
+      { id: 46, name: 'Granola', unit: 'g', kcal100: 489, p: 9, c: 64, f: 20 },
+      { id: 47, name: 'Salmão', unit: 'g', kcal100: 208, p: 20, c: 0, f: 13 },
+      { id: 48, name: 'Amendoim torrado', unit: 'g', kcal100: 567, p: 26, c: 16, f: 49 },
+      { id: 49, name: 'Linhaça', unit: 'g', kcal100: 534, p: 18, c: 29, f: 42 },
+      { id: 50, name: 'Iogurte natural desnatado', unit: 'g', kcal100: 56, p: 5.7, c: 7.8, f: 0.2 },
+    ];
+
+    const BASE_PROTOCOLS = [
+      {
+        id: 'emagrecimento', name: 'Déficit Calórico 1600kcal', goal: 'emagrecimento',
+        desc: 'Déficit moderado, alto teor proteico para preservar massa magra.',
+        meals: [
+          { name: 'Café da manhã', foods: [{ id: 17, qty: 50 }, { id: 36, qty: 100 }, { id: 10, qty: 150 }] },
+          { name: 'Lanche manhã', foods: [{ id: 8, qty: 30 }, { id: 39, qty: 100 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 150 }, { id: 13, qty: 150 }, { id: 21, qty: 80 }, { id: 30, qty: 10 }] },
+          { name: 'Lanche tarde', foods: [{ id: 5, qty: 120 }, { id: 37, qty: 130 }] },
+          { name: 'Jantar', foods: [{ id: 3, qty: 120 }, { id: 12, qty: 120 }, { id: 23, qty: 60 }] },
+        ]
+      },
+      {
+        id: 'hipertrofia', name: 'Bulk Limpo 2800kcal', goal: 'hipertrofia',
+        desc: 'Superávit calórico com ênfase em proteína e carboidratos de qualidade.',
+        meals: [
+          { name: 'Café da manhã', foods: [{ id: 17, qty: 80 }, { id: 5, qty: 200 }, { id: 41, qty: 200 }, { id: 36, qty: 150 }] },
+          { name: 'Lanche manhã', foods: [{ id: 8, qty: 40 }, { id: 11, qty: 100 }, { id: 32, qty: 30 }] },
+          { name: 'Almoço', foods: [{ id: 2, qty: 180 }, { id: 11, qty: 200 }, { id: 18, qty: 100 }, { id: 25, qty: 100 }] },
+          { name: 'Pré-treino', foods: [{ id: 13, qty: 200 }, { id: 1, qty: 100 }] },
+          { name: 'Pós-treino', foods: [{ id: 8, qty: 40 }, { id: 17, qty: 50 }] },
+          { name: 'Jantar', foods: [{ id: 1, qty: 150 }, { id: 12, qty: 150 }, { id: 21, qty: 80 }] },
+          { name: 'Ceia', foods: [{ id: 10, qty: 200 }, { id: 49, qty: 15 }] },
+        ]
+      },
+      {
+        id: 'manutencao', name: 'Manutenção 2200kcal', goal: 'manutencao',
+        desc: 'Balanço calórico equilibrado para manter peso e composição corporal.',
+        meals: [
+          { name: 'Café da manhã', foods: [{ id: 17, qty: 60 }, { id: 5, qty: 120 }, { id: 41, qty: 150 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 130 }, { id: 11, qty: 150 }, { id: 18, qty: 80 }, { id: 25, qty: 80 }] },
+          { name: 'Lanche', foods: [{ id: 9, qty: 150 }, { id: 37, qty: 150 }] },
+          { name: 'Jantar', foods: [{ id: 4, qty: 130 }, { id: 13, qty: 150 }, { id: 24, qty: 60 }] },
+        ]
+      },
+      {
+        id: 'definicao', name: 'Cutting 1900kcal', goal: 'definicao',
+        desc: 'Déficit pequeno, alta proteína e baixo carboidrato para perder gordura sem perder músculo.',
+        meals: [
+          { name: 'Café da manhã', foods: [{ id: 6, qty: 200 }, { id: 17, qty: 40 }, { id: 39, qty: 80 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 160 }, { id: 13, qty: 130 }, { id: 21, qty: 80 }, { id: 30, qty: 8 }] },
+          { name: 'Pré-treino', foods: [{ id: 3, qty: 100 }, { id: 37, qty: 130 }] },
+          { name: 'Jantar', foods: [{ id: 7, qty: 140 }, { id: 23, qty: 80 }, { id: 25, qty: 80 }, { id: 31, qty: 60 }] },
+        ]
+      },
+    ];
+
+    // storage
+    function ls(k) { try { return JSON.parse(localStorage.getItem('ftp_' + k) || 'null') } catch { return null } }
+    function lsSet(k, v) { localStorage.setItem('ftp_' + k, JSON.stringify(v)) }
+
+    let users = ls('users') || [];
+    let ptClients = ls('ptClients') || [
+      { id: 1, nome: 'Ana Carla Mendes', idade: 28, sexo: 'F', peso: 72, altura: 163, meta: 62, objetivo: 'emagrecer', kcalMeta: 1600, obs: 'Intolerante à lactose', cor: 0, criadoEm: new Date().toISOString(), pesos: [{ data: fmtDate(daysAgo(5)), val: 73.2 }, { data: fmtDate(daysAgo(3)), val: 72.6 }, { data: fmtDate(new Date()), val: 72 }], notas: 'Comprometida, treina 4x/semana.' },
+      { id: 2, nome: 'Carlos Eduardo Lima', idade: 34, sexo: 'M', peso: 85, altura: 178, meta: 90, objetivo: 'ganhar', kcalMeta: 2800, obs: '', cor: 1, criadoEm: new Date().toISOString(), pesos: [{ data: fmtDate(daysAgo(5)), val: 83 }, { data: fmtDate(daysAgo(2)), val: 84 }, { data: fmtDate(new Date()), val: 85 }], notas: 'Treina 5x/semana.' },
+      { id: 3, nome: 'Fernanda Rocha', idade: 31, sexo: 'F', peso: 65, altura: 168, meta: 60, objetivo: 'definir', kcalMeta: 1900, obs: 'Vegetariana', cor: 2, criadoEm: new Date().toISOString(), pesos: [{ data: fmtDate(daysAgo(3)), val: 65.5 }, { data: fmtDate(new Date()), val: 65 }], notas: 'Vegetariana. Ótima aderência.' },
+    ];
+    let diets = ls('diets') || {};
+    let protocols = ls('protocols') || [];
+    let currentUser = ls('currentUser') || null;
+    let currentDietClientId = null;
+    let currentClientDetail = null;
+    let currentProtocolId = null;
+    let listCurrentPage = 1;
+    const PER_PAGE = 8;
+    const USR_COLORS = ['#c8f53a', '#5ab0ff', '#ffaa3b', '#ff5959', '#5affd4', '#ff7eb3', '#c084fc', '#f97316'];
+
+    // helpers
+    function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d }
+    function fmtDate(d) { return d.toLocaleDateString('pt-BR') }
+    function uid() { return Date.now() + Math.floor(Math.random() * 9999) }
+    function foodById(id) { return FOOD_DB.find(f => f.id === id) }
+    function kcal(id, qty) { const f = foodById(id); return f ? Math.round(f.kcal100 * (qty / 100)) : 0 }
+    function macro(id, qty, m) { const f = foodById(id); return f ? Math.round(f[m] * (qty / 100) * 10) / 10 : 0 }
+    function saveAll() { lsSet('users', users); lsSet('ptClients', ptClients); lsSet('diets', diets); lsSet('protocols', protocols) }
+    function initDiet(cid) {
+      if (!diets[cid]) { diets[cid] = { meals: [{ id: uid(), name: 'Café da manhã', foods: [] }, { id: uid(), name: 'Almoço', foods: [] }, { id: uid(), name: 'Jantar', foods: [] }] }; saveAll() }
+      return diets[cid];
+    }
+
+    // init users if empty
+    if (!users.length) {
+      users = [
+        { id: 1, nome: 'Admin Sistema', email: 'admin@fittrack.com', perfil: 'admin', objetivo: 'manter', peso: 75, altura: 178, status: 'ativo', criadoEm: new Date().toISOString() },
+        { id: 2, nome: 'Maria Silva', email: 'maria@gmail.com', perfil: 'usuario', objetivo: 'emagrecer', peso: 68, altura: 163, status: 'ativo', criadoEm: new Date().toISOString() },
+        { id: 3, nome: 'João Costa', email: 'joao@email.com', perfil: 'usuario', objetivo: 'ganhar', peso: 82, altura: 180, status: 'ativo', criadoEm: new Date().toISOString() },
+      ];
+      saveAll();
+    }
+
+    // ════════════════════════════
+    // NAVIGATION
+    // ════════════════════════════
+    function goTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.getElementById('main-nav').style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const links = document.getElementById('nav-links');
+      if (page === 'list') {
+        renderList();
+        links.innerHTML = `<button class="nav-btn" onclick="goTo('landing')">← Início</button><button class="nav-btn primary" onclick="goTo('register')">+ Novo</button>`;
+      } else if (page === 'register' || page === 'login') {
+        links.innerHTML = `<button class="nav-btn" onclick="goTo('landing')">← Início</button>`;
+      } else {
+        links.innerHTML = `<button class="nav-btn" onclick="goTo('login')">Entrar</button><button class="nav-btn primary" onclick="goTo('register')">Começar grátis</button>`;
+        if (page === 'landing') setTimeout(drawBentoChart, 200);
+      }
+    }
+
+    function goToPersonal() {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-personal').classList.add('active');
+      document.getElementById('main-nav').style.display = 'none';
+      if (currentUser) {
+        const ini = currentUser.nome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        document.getElementById('pt-avatar').textContent = ini;
+        document.getElementById('pt-name').textContent = currentUser.nome.split(' ')[0];
+        const h = new Date().getHours();
+        const greet = h < 12 ? 'BOM DIA' : h < 18 ? 'BOA TARDE' : 'BOA NOITE';
+        document.getElementById('dash-greeting').innerHTML = `${greet},<br><span>${currentUser.nome.split(' ')[0].toUpperCase()}</span> 👋`;
+      }
+      ptGoTo('dashboard');
+    }
+
+    function ptGoTo(sub) {
+      document.querySelectorAll('.pt-page').forEach(p => p.classList.remove('active'));
+      document.getElementById('ptpage-' + sub).classList.add('active');
+      document.querySelectorAll('.pt-nav-item').forEach(n => n.classList.remove('active'));
+      const el = document.getElementById('ptnav-' + sub);
+      if (el) el.classList.add('active');
+      if (sub === 'dashboard') renderDashboard();
+      if (sub === 'clients') renderClients();
+      if (sub === 'diet') { renderDietClientList(); if (currentDietClientId) renderDietMain(); }
+      if (sub === 'protocols') renderProtocols();
+    }
+
+    function doLogout() { currentUser = null; lsSet('currentUser', null); goTo('landing'); showToast('Até logo!', 'success') }
+
+    // ════════════════════════════
+    // TOAST
+    // ════════════════════════════
+    let toastT;
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      document.getElementById('toast-icon').textContent = type === 'success' ? '✓' : '✕';
+      document.getElementById('toast-msg').textContent = msg;
+      clearTimeout(toastT);
+      el.className = 'toast show ' + type;
+      toastT = setTimeout(() => el.className = 'toast', 3500);
+    }
+
+    // ════════════════════════════
+    // MODAL
+    // ════════════════════════════
+    function openModal(id) { document.getElementById(id).classList.add('open') }
+    function closeModal(id) { document.getElementById(id).classList.remove('open') }
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open') });
+    });
+
+    // ════════════════════════════
+    // ORIGINAL AUTH
+    // ════════════════════════════
+    function showAlert(id, msg, type) { const el = document.getElementById(id); el.className = 'alert show ' + type; el.textContent = msg }
+    function hideAlert(id) { document.getElementById(id).className = 'alert' }
+
+    function checkStrength(v) {
+      const fill = document.getElementById('strength-fill');
+      let s = 0;
+      if (v.length >= 6) s++; if (v.length >= 10) s++; if (/[A-Z]/.test(v)) s++; if (/[0-9]/.test(v)) s++; if (/[^A-Za-z0-9]/.test(v)) s++;
+      fill.style.width = (s / 5 * 100) + '%';
+      fill.style.background = s <= 1 ? 'var(--red)' : s <= 3 ? 'var(--orange)' : 'var(--lime)';
+    }
+
+    function doRegister() {
+      hideAlert('reg-alert');
+      const nome = document.getElementById('reg-nome').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const senha = document.getElementById('reg-senha').value;
+      const peso = document.getElementById('reg-peso').value;
+      const altura = document.getElementById('reg-altura').value;
+      const objetivo = document.getElementById('reg-objetivo').value;
+      const perfil = document.getElementById('reg-perfil').value;
+      if (!nome) return showAlert('reg-alert', 'Nome é obrigatório.', 'error');
+      if (!email || !email.includes('@')) return showAlert('reg-alert', 'E-mail inválido.', 'error');
+      if (users.find(u => u.email === email)) return showAlert('reg-alert', 'E-mail já cadastrado.', 'error');
+      if (senha.length < 6) return showAlert('reg-alert', 'Senha deve ter pelo menos 6 caracteres.', 'error');
+      const btn = document.getElementById('btn-register');
+      btn.disabled = true; btn.textContent = 'Criando conta…';
+      setTimeout(() => {
+        const newUser = { id: Date.now(), nome, email, perfil, objetivo, peso: parseFloat(peso) || null, altura: parseInt(altura) || null, status: 'ativo', criadoEm: new Date().toISOString() };
+        users.push(newUser); saveAll();
+        showAlert('reg-alert', 'Conta criada com sucesso! Redirecionando…', 'success');
+        showToast('Conta criada! 🎉', 'success');
+        ['reg-nome', 'reg-email', 'reg-senha', 'reg-peso', 'reg-altura'].forEach(id => { document.getElementById(id).value = '' });
+        document.getElementById('reg-objetivo').value = '';
+        document.getElementById('strength-fill').style.width = '0';
+        btn.disabled = false; btn.textContent = 'Criar conta →';
+        currentUser = newUser; lsSet('currentUser', newUser);
+        setTimeout(() => {
+          if (perfil === 'admin') goToPersonal(); else goTo('list');
+        }, 1400);
+      }, 900);
+    }
+
+    function doLogin() {
+      hideAlert('login-alert');
+      const email = document.getElementById('login-email').value.trim();
+      const senha = document.getElementById('login-senha').value;
+      if (!email) return showAlert('login-alert', 'Digite seu e-mail.', 'error');
+      if (!senha) return showAlert('login-alert', 'Digite sua senha.', 'error');
+      const btn = document.getElementById('btn-login');
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      setTimeout(() => {
+        const user = users.find(u => u.email === email);
+        if (!user) {
+          showAlert('login-alert', 'E-mail não encontrado. Verifique ou cadastre-se.', 'error');
+          btn.disabled = false; btn.textContent = 'Entrar →';
+          return;
+        }
+        showAlert('login-alert', 'Login realizado com sucesso! ✓', 'success');
+        showToast(`Bem-vindo de volta, ${user.nome.split(' ')[0]}! ⚡`, 'success');
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-senha').value = '';
+        btn.disabled = false; btn.textContent = 'Entrar →';
+        currentUser = user; lsSet('currentUser', user);
+        setTimeout(() => {
+          if (user.perfil === 'admin') goToPersonal(); else goTo('list');
+        }, 1200);
+      }, 900);
+    }
+
+    // ════════════════════════════
+    // ORIGINAL USER LIST
+    // ════════════════════════════
+    const objLabel = { emagrecer: '🔻 Emagrecer', manter: '⚖️ Manter', ganhar: '📈 Ganhar', definir: '⚡ Definir', '': `—` };
+    function saveUsers() { lsSet('users', users) }
+    function getFiltered() {
+      const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const pf = document.getElementById('filter-perfil')?.value || '';
+      return users.filter(u => {
+        const mq = !q || u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+        const mp = !pf || u.perfil === pf;
+        return mq && mp;
+      });
+    }
+    function filterUsers() { listCurrentPage = 1; renderList() }
+    function renderList() {
+      document.getElementById('ls-total').textContent = users.length;
+      document.getElementById('ls-admin').textContent = users.filter(u => u.perfil === 'admin').length;
+      document.getElementById('ls-active').textContent = users.filter(u => u.status === 'ativo').length;
+      const today = new Date().toDateString();
+      document.getElementById('ls-new').textContent = users.filter(u => new Date(u.criadoEm).toDateString() === today).length;
+      const filtered = getFiltered();
+      const total = filtered.length;
+      const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+      if (listCurrentPage > pages) listCurrentPage = pages;
+      const slice = filtered.slice((listCurrentPage - 1) * PER_PAGE, listCurrentPage * PER_PAGE);
+      const tbody = document.getElementById('user-table-body');
+      if (total === 0) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-txt">Nenhum usuário encontrado.</div></div></td></tr>`;
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+      tbody.innerHTML = slice.map(u => {
+        const initials = u.nome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        const color = USR_COLORS[u.id % USR_COLORS.length];
+        const date = new Date(u.criadoEm).toLocaleDateString('pt-BR');
+        return `<tr>
+      <td><div class="td-user"><div class="avatar" style="background:${color}22;color:${color};border:1px solid ${color}44">${initials}</div><div><div class="td-name">${u.nome}</div><div class="td-email">${u.email}</div></div></div></td>
+      <td><span class="badge-role ${u.perfil === 'admin' ? 'role-admin' : 'role-user'}">${u.perfil}</span></td>
+      <td>${objLabel[u.objetivo || '']}</td>
+      <td><span class="badge-status ${u.status === 'ativo' ? 'status-active' : 'status-inactive'}"><span class="status-dot-sm"></span>${u.status}</span></td>
+      <td>${date}</td>
+      <td><div class="actions-cell"><button class="action-btn" onclick="toggleStatus(${u.id})">${u.status === 'ativo' ? 'Desativar' : 'Ativar'}</button><button class="action-btn del" onclick="deleteUser(${u.id})">Remover</button></div></td>
+    </tr>`;
+      }).join('');
+      const pag = document.getElementById('pagination');
+      pag.style.display = 'flex';
+      document.getElementById('pag-info').textContent = `Mostrando ${slice.length} de ${total} usuário${total !== 1 ? 's' : ''}`;
+      const btns = document.getElementById('pag-btns'); btns.innerHTML = '';
+      for (let i = 1; i <= pages; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === listCurrentPage ? ' active' : '');
+        b.textContent = i;
+        b.onclick = () => { listCurrentPage = i; renderList() };
+        btns.appendChild(b);
+      }
+    }
+    function toggleStatus(id) { const u = users.find(u => u.id === id); if (!u) return; u.status = u.status === 'ativo' ? 'inativo' : 'ativo'; saveAll(); renderList(); showToast(`${u.nome} ${u.status === 'ativo' ? 'ativado' : 'desativado'}.`, 'success') }
+    function deleteUser(id) { const u = users.find(u => u.id === id); if (!u) return; if (!confirm(`Remover ${u.nome}?`)) return; users = users.filter(u => u.id !== id); saveAll(); renderList(); showToast('Usuário removido.', 'error') }
+
+    // ════════════════════════════
+    // PT — DASHBOARD
+    // ════════════════════════════
+    function renderDashboard() {
+      document.getElementById('ds-total').textContent = ptClients.length;
+      document.getElementById('ds-diets').textContent = Object.keys(diets).length;
+      const onTrack = ptClients.filter(c => {
+        if (!c.pesos || c.pesos.length < 2) return false;
+        const last = c.pesos.slice(-2);
+        if (c.objetivo === 'emagrecer') return last[1].val <= last[0].val;
+        if (c.objetivo === 'ganhar') return last[1].val >= last[0].val;
+        return true;
+      }).length;
+      document.getElementById('ds-metas').textContent = onTrack;
+      let loss = 0;
+      ptClients.forEach(c => { if (c.pesos && c.pesos.length >= 2) { const d = c.pesos[0].val - c.pesos[c.pesos.length - 1].val; if (d > 0) loss += d } });
+      document.getElementById('ds-loss').textContent = loss.toFixed(1) + 'kg';
+      const wrap = document.getElementById('dash-clients-preview'); wrap.innerHTML = '';
+      ptClients.slice(0, 3).forEach(c => wrap.appendChild(buildClientCard(c, true)));
+    }
+
+    // ════════════════════════════
+    // PT — CLIENTS
+    // ════════════════════════════
+    function renderClients() {
+      const q = (document.getElementById('clients-search')?.value || '').toLowerCase();
+      const obj = document.getElementById('clients-filter')?.value || '';
+      const filtered = ptClients.filter(c => { return (!q || c.nome.toLowerCase().includes(q)) && (!obj || c.objetivo === obj) });
+      const grid = document.getElementById('clients-grid'); grid.innerHTML = '';
+      if (!filtered.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3)"><span style="font-size:40px;opacity:.3;display:block;margin-bottom:1rem">👥</span>Nenhum cliente encontrado</div>`;
+        return;
+      }
+      filtered.forEach(c => grid.appendChild(buildClientCard(c, false)));
+    }
+
+    function buildClientCard(c, mini) {
+      const initials = c.nome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+      const color = COLORS[c.cor % COLORS.length];
+      const initPeso = c.pesos && c.pesos.length ? c.pesos[0].val : c.peso;
+      const pct = (c.meta && initPeso && initPeso !== c.meta) ? Math.min(100, Math.max(0, Math.round(Math.abs(initPeso - c.peso) / Math.abs(initPeso - c.meta) * 100))) : 0;
+      const hasDiet = !!diets[c.id];
+      const badgeClass = c.objetivo === 'ganhar' ? 'blue' : c.objetivo === 'manter' ? 'orange' : '';
+      const card = document.createElement('div'); card.className = 'client-card';
+      card.innerHTML = `
+    <div class="client-card-header">
+      <div class="client-avt" style="background:${color}22;color:${color};border:1px solid ${color}44">${initials}</div>
+      <div style="flex:1;min-width:0"><div class="client-cname">${c.nome}</div><div class="client-cmeta">${c.idade} anos · ${c.sexo === 'M' ? 'M' : 'F'} · ${c.altura}cm</div></div>
+      <span class="client-cbadge ${badgeClass}">${OBJ_LABEL[c.objetivo] || c.objetivo}</span>
+    </div>
+    <div class="client-mini-stats">
+      <div class="cms-item"><div class="cms-val">${c.peso}</div><div class="cms-lbl">kg atual</div></div>
+      <div class="cms-item"><div class="cms-val">${c.meta}</div><div class="cms-lbl">kg meta</div></div>
+      <div class="cms-item"><div class="cms-val">${c.kcalMeta || '—'}</div><div class="cms-lbl">kcal/dia</div></div>
+    </div>
+    <div class="client-prog-label"><span>Progresso para meta</span><span>${pct}%</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    ${!mini ? `<div class="client-card-actions">
+      <button class="btn-sm lime" onclick="openClientDetail(${c.id},event)">Ver detalhes</button>
+      <button class="btn-sm" onclick="goToDiet(${c.id},event)">🍽 Dieta${hasDiet ? ' ✓' : ''}</button>
+      <button class="btn-sm danger" onclick="removeClient(${c.id},event)">Remover</button>
+    </div>`: ''}
+  `;
+      return card;
+    }
+
+    function openAddClient() {
+      ['ac-nome', 'ac-idade', 'ac-peso', 'ac-altura', 'ac-meta', 'ac-kcal', 'ac-obs'].forEach(id => document.getElementById(id).value = '');
+      openModal('modal-add-client');
+    }
+    function saveClient() {
+      const nome = document.getElementById('ac-nome').value.trim();
+      if (!nome) { showToast('Nome é obrigatório', 'error'); return }
+      const c = { id: uid(), nome, idade: parseInt(document.getElementById('ac-idade').value) || 25, sexo: document.getElementById('ac-sexo').value, peso: parseFloat(document.getElementById('ac-peso').value) || 70, altura: parseInt(document.getElementById('ac-altura').value) || 170, meta: parseFloat(document.getElementById('ac-meta').value) || 65, objetivo: document.getElementById('ac-objetivo').value, kcalMeta: parseInt(document.getElementById('ac-kcal').value) || 1800, obs: document.getElementById('ac-obs').value, cor: ptClients.length % COLORS.length, criadoEm: new Date().toISOString(), pesos: [{ data: fmtDate(new Date()), val: parseFloat(document.getElementById('ac-peso').value) || 70 }], notas: '' };
+      ptClients.push(c); saveAll(); closeModal('modal-add-client'); renderClients(); renderDashboard(); showToast(`${c.nome} adicionado!`, 'success');
+    }
+    function removeClient(id, e) {
+      if (e) e.stopPropagation();
+      const c = ptClients.find(x => x.id === id);
+      if (!c || !confirm(`Remover ${c.nome}?`)) return;
+      ptClients = ptClients.filter(x => x.id !== id); saveAll(); renderClients(); renderDashboard(); showToast('Cliente removido', 'error');
+    }
+
+    // Client detail
+    function openClientDetail(id, e) {
+      if (e) e.stopPropagation();
+      const c = ptClients.find(x => x.id === id); if (!c) return;
+      currentClientDetail = c;
+      document.getElementById('detail-title').textContent = c.nome.split(' ')[0].toUpperCase();
+      const imc = (c.peso / (c.altura / 100) ** 2).toFixed(1);
+      const initPeso = c.pesos && c.pesos.length ? c.pesos[0].val : c.peso;
+      const pct = initPeso !== c.meta ? Math.min(100, Math.max(0, Math.round(Math.abs(initPeso - c.peso) / Math.abs(initPeso - c.meta) * 100))) : 0;
+      document.getElementById('detail-info-grid').innerHTML = `
+    <div class="info-box"><div class="info-box-val">${c.peso}kg</div><div class="info-box-lbl">Peso atual</div></div>
+    <div class="info-box"><div class="info-box-val">${c.meta}kg</div><div class="info-box-lbl">Meta</div></div>
+    <div class="info-box"><div class="info-box-val">${imc}</div><div class="info-box-lbl">IMC</div></div>
+    <div class="info-box"><div class="info-box-val">${c.altura}cm</div><div class="info-box-lbl">Altura</div></div>
+    <div class="info-box"><div class="info-box-val">${c.kcalMeta || '—'}</div><div class="info-box-lbl">kcal/dia</div></div>
+    <div class="info-box"><div class="info-box-val">${c.idade}</div><div class="info-box-lbl">Idade</div></div>
+  `;
+      document.getElementById('detail-prog-lbl').textContent = `${initPeso}kg → ${c.peso}kg (meta: ${c.meta}kg)`;
+      document.getElementById('detail-prog-pct').textContent = pct + '%';
+      document.getElementById('detail-prog-fill').style.width = pct + '%';
+      document.getElementById('detail-obs').innerHTML = c.obs ? `<strong style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)">Obs:</strong><div style="margin-top:4px">${c.obs}</div>` : '<span style="color:var(--text3);font-size:12px">Sem observações</span>';
+      renderEvoHistory(c);
+      document.getElementById('detail-notes').value = c.notas || '';
+      switchTab(0); openModal('modal-client-detail');
+    }
+    function switchTab(idx) {
+      document.querySelectorAll('.detail-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('.detail-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+    function renderEvoHistory(c) {
+      const wrap = document.getElementById('evo-history');
+      if (!c.pesos || !c.pesos.length) { wrap.innerHTML = '<p style="font-size:12px;color:var(--text3)">Sem registros.</p>'; return }
+      const rev = [...c.pesos].reverse();
+      wrap.innerHTML = rev.map((p, i) => {
+        const prev = rev[i + 1];
+        const diff = prev ? (p.val - prev.val) : 0;
+        const tag = diff === 0 ? '' : (diff > 0 ? `<span style="color:var(--red);font-size:11px">▲${diff.toFixed(1)}</span>` : `<span style="color:var(--lime);font-size:11px">▼${Math.abs(diff).toFixed(1)}</span>`);
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
+      <span style="font-size:12px;color:var(--text2)">${p.data}</span>
+      <div style="display:flex;align-items:center;gap:8px">${tag}<span style="font-family:var(--display);font-size:20px;color:var(--lime)">${p.val}kg</span></div>
+    </div>`;
+      }).join('');
+    }
+    function addWeightEntry() {
+      const val = parseFloat(document.getElementById('evo-peso').value);
+      if (!val || !currentClientDetail) return;
+      currentClientDetail.peso = val;
+      if (!currentClientDetail.pesos) currentClientDetail.pesos = [];
+      currentClientDetail.pesos.push({ data: fmtDate(new Date()), val });
+      document.getElementById('evo-peso').value = '';
+      saveAll(); renderEvoHistory(currentClientDetail); renderClients(); showToast('Peso registrado!', 'success');
+    }
+    function saveNotes() { if (currentClientDetail) currentClientDetail.notas = document.getElementById('detail-notes').value, saveAll() }
+    function goToDiet(id, e) {
+      if (e) e.stopPropagation();
+      currentDietClientId = id; closeModal('modal-client-detail');
+      ptGoTo('diet'); setTimeout(() => selectDietClient(id), 80);
+    }
+
+    // ════════════════════════════
+    // PT — DIET BUILDER
+    // ════════════════════════════
+    function renderDietClientList() {
+      const q = (document.getElementById('diet-search')?.value || '').toLowerCase();
+      const wrap = document.getElementById('diet-client-list');
+      wrap.innerHTML = ptClients.filter(c => !q || c.nome.toLowerCase().includes(q)).map(c => {
+        const initials = c.nome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        const color = COLORS[c.cor % COLORS.length];
+        return `<div class="diet-cli-item${c.id === currentDietClientId ? ' active' : ''}" onclick="selectDietClient(${c.id})">
+      <div class="client-avt" style="width:36px;height:36px;font-size:12px;background:${color}22;color:${color};border:1px solid ${color}44">${initials}</div>
+      <div><div class="diet-cli-name">${c.nome}</div><div class="diet-cli-goal">${OBJ_LABEL[c.objetivo] || ''} · ${c.kcalMeta || '—'} kcal</div></div>
+    </div>`;
+      }).join('');
+    }
+    function selectDietClient(id) { currentDietClientId = id; renderDietClientList(); renderDietMain() }
+    function renderDietMain() {
+      const area = document.getElementById('diet-main-area');
+      if (!currentDietClientId) {
+        area.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;flex:1;flex-direction:column;gap:.5rem;color:var(--text3);padding:3rem"><span style="font-size:48px;opacity:.3">🍽</span><div style="font-size:14px">Selecione um cliente</div></div>`;
+        return;
+      }
+      const c = ptClients.find(x => x.id === currentDietClientId); if (!c) return;
+      const diet = initDiet(c.id);
+      let tK = 0, tP = 0, tC = 0, tF = 0;
+      diet.meals.forEach(m => m.foods.forEach(fi => { tK += kcal(fi.id, fi.qty); tP += macro(fi.id, fi.qty, 'p'); tC += macro(fi.id, fi.qty, 'c'); tF += macro(fi.id, fi.qty, 'f') }));
+      const target = c.kcalMeta || 2000;
+      const pctK = Math.min(100, Math.round(tK / target * 100));
+      area.innerHTML = `
+    <div class="diet-top-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div><div class="diet-client-title">DIETA DE <span>${c.nome.split(' ')[0].toUpperCase()}</span></div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">${OBJ_LABEL[c.objetivo] || ''} · Meta: ${target} kcal/dia</div></div>
+        <div style="display:flex;gap:8px"><button class="btn-sm" onclick="addMeal()">+ Refeição</button><button class="btn-sm lime" onclick="saveDiet()">💾 Salvar</button></div>
+      </div>
+      <div class="macro-row">
+        <div class="macro-box"><div class="macro-box-val" style="color:var(--lime)">${tK}</div><div class="macro-box-lbl">kcal total</div><div class="macro-bar-wrap"><div class="macro-bar-fill" style="width:${pctK}%;background:var(--lime)"></div></div></div>
+        <div class="macro-box"><div class="macro-box-val" style="color:#5ab0ff">${tP.toFixed(0)}g</div><div class="macro-box-lbl">Proteína</div><div class="macro-bar-wrap"><div class="macro-bar-fill" style="width:${tK ? Math.min(100, Math.round(tP * 4 / tK * 100)) : 0}%;background:#5ab0ff"></div></div></div>
+        <div class="macro-box"><div class="macro-box-val" style="color:#ffaa3b">${tC.toFixed(0)}g</div><div class="macro-box-lbl">Carboidrato</div><div class="macro-bar-wrap"><div class="macro-bar-fill" style="width:${tK ? Math.min(100, Math.round(tC * 4 / tK * 100)) : 0}%;background:#ffaa3b"></div></div></div>
+        <div class="macro-box"><div class="macro-box-val" style="color:#ff7eb3">${tF.toFixed(0)}g</div><div class="macro-box-lbl">Gordura</div><div class="macro-bar-wrap"><div class="macro-bar-fill" style="width:${tK ? Math.min(100, Math.round(tF * 9 / tK * 100)) : 0}%;background:#ff7eb3"></div></div></div>
+      </div>
+    </div>
+    <div id="meals-container">${diet.meals.map((m, mi) => buildMealCard(m, mi)).join('')}</div>
+  `;
+    }
+    function buildMealCard(m, mi) {
+      const mK = m.foods.reduce((s, fi) => s + kcal(fi.id, fi.qty), 0);
+      const rows = m.foods.map((fi, fii) => {
+        const food = foodById(fi.id); if (!food) return '';
+        return `<tr><td>${food.name}</td><td>${fi.qty}${food.unit}</td><td>${kcal(fi.id, fi.qty)}</td><td>${macro(fi.id, fi.qty, 'p').toFixed(0)}g</td><td>${macro(fi.id, fi.qty, 'c').toFixed(0)}g</td><td>${macro(fi.id, fi.qty, 'f').toFixed(0)}g</td><td><button class="rm-food" onclick="removeFood(${mi},${fii})">✕</button></td></tr>`;
+      }).join('');
+      return `<div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(${mi})">
+      <div class="meal-hdr-left"><span style="font-size:16px">🍴</span><div><div class="meal-name">${m.name}</div><div class="meal-kcal-lbl">${mK} kcal · ${m.foods.length} alimento${m.foods.length !== 1 ? 's' : ''}</div></div></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-sm" style="font-size:11px;padding:4px 9px" onclick="renameMeal(${mi},event)">✏️</button>
+        <button class="btn-sm danger" style="padding:4px 9px" onclick="removeMeal(${mi},event)">✕</button>
+        <span class="meal-tog open" id="mtog-${mi}">▲</span>
+      </div>
+    </div>
+    <div class="meal-body open" id="mbody-${mi}">
+      ${m.foods.length ? `<table class="food-tbl"><thead><tr><th>Alimento</th><th>Qtd</th><th>Kcal</th><th>Prot</th><th>Carb</th><th>Gord</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : '<p style="font-size:12px;color:var(--text3);padding:.25rem 0">Nenhum alimento ainda.</p>'}
+      <div class="add-food-row">
+        <div class="food-srch-wrap">
+          <input class="food-srch" id="fsrch-${mi}" placeholder="🔍 Buscar alimento..." oninput="filterFoodDrop(${mi})" onblur="setTimeout(()=>closeFoodDrop(${mi}),200)"/>
+          <div class="food-drop" id="fdrop-${mi}"></div>
+        </div>
+        <input class="qty-inp" id="fqty-${mi}" type="number" min="1" max="2000" value="100"/>
+        <button class="btn-sm lime" onclick="addFoodToMeal(${mi})">Adicionar</button>
+      </div>
+    </div>
+  </div>`;
+    }
+    function toggleMeal(mi) { const b = document.getElementById('mbody-' + mi), t = document.getElementById('mtog-' + mi); const o = b.classList.toggle('open'); t.classList.toggle('open', o) }
+    const selFoodId = {};
+    function filterFoodDrop(mi) {
+      const q = document.getElementById('fsrch-' + mi).value.toLowerCase();
+      const drop = document.getElementById('fdrop-' + mi);
+      if (!q) { drop.classList.remove('open'); return }
+      const res = FOOD_DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 12);
+      drop.innerHTML = res.map(f => `<div class="food-opt" onmousedown="selectFood(${mi},${f.id})"><span>${f.name}</span><span class="food-opt-kcal">${f.kcal100} kcal/100${f.unit}</span></div>`).join('');
+      drop.classList.toggle('open', res.length > 0);
+    }
+    function selectFood(mi, fid) { selFoodId[mi] = fid; document.getElementById('fsrch-' + mi).value = foodById(fid).name; closeFoodDrop(mi) }
+    function closeFoodDrop(mi) { const d = document.getElementById('fdrop-' + mi); if (d) d.classList.remove('open') }
+    function addFoodToMeal(mi) {
+      const fid = selFoodId[mi]; const qty = parseFloat(document.getElementById('fqty-' + mi).value) || 100;
+      if (!fid) { showToast('Selecione um alimento da lista', 'error'); return }
+      diets[currentDietClientId].meals[mi].foods.push({ id: fid, qty }); selFoodId[mi] = null; saveAll(); renderDietMain();
+    }
+    function removeFood(mi, fii) { diets[currentDietClientId].meals[mi].foods.splice(fii, 1); saveAll(); renderDietMain() }
+    function addMeal() { const d = diets[currentDietClientId]; d.meals.push({ id: uid(), name: `Refeição ${d.meals.length + 1}`, foods: [] }); saveAll(); renderDietMain() }
+    function removeMeal(mi, e) {
+      e.stopPropagation(); const d = diets[currentDietClientId];
+      if (d.meals.length <= 1) { showToast('Precisa ter ao menos 1 refeição', 'error'); return }
+      if (!confirm('Remover esta refeição?')) return;
+      d.meals.splice(mi, 1); saveAll(); renderDietMain();
+    }
+    function renameMeal(mi, e) {
+      e.stopPropagation(); const d = diets[currentDietClientId];
+      const name = prompt('Nome da refeição:', d.meals[mi].name);
+      if (name) { d.meals[mi].name = name; saveAll(); renderDietMain() }
+    }
+    function saveDiet() { saveAll(); showToast('Dieta salva! ✓', 'success') }
+
+    // ════════════════════════════
+    // PT — PROTOCOLS
+    // ════════════════════════════
+    const PTAG_MAP = { emagrecimento: 'ptag-emagrecimento', hipertrofia: 'ptag-hipertrofia', manutencao: 'ptag-manutencao', definicao: 'ptag-definicao' };
+    function renderProtocols() {
+      const grid = document.getElementById('protocols-grid');
+      const all = [...BASE_PROTOCOLS, ...protocols];
+      if (!all.length) { grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3)"><span style="font-size:40px;opacity:.3;display:block;margin-bottom:1rem">📋</span>Nenhum protocolo ainda. Carregue um ou crie em branco.</div>`; return }
+      grid.innerHTML = all.map(p => {
+        const tK = p.meals.reduce((s, m) => s + m.foods.reduce((ss, fi) => ss + kcal(fi.id, fi.qty), 0), 0);
+        const tag = PTAG_MAP[p.goal] || 'ptag-manutencao';
+        const isBase = BASE_PROTOCOLS.some(x => x.id === p.id);
+        return `<div class="protocol-card" onclick="loadProtocolEditor('${p.id}')">
+      <span class="ptag ${tag}">${p.goal}${isBase ? ' · base' : ''}</span>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-desc">${p.desc || ''}</div>
+      <div class="pcard-stats">
+        <div><div class="pstat-val">${tK}</div><div class="pstat-lbl">kcal/dia</div></div>
+        <div><div class="pstat-val">${p.meals.length}</div><div class="pstat-lbl">Refeições</div></div>
+        <div><div class="pstat-val">${p.meals.reduce((s, m) => s + m.foods.length, 0)}</div><div class="pstat-lbl">Alimentos</div></div>
+      </div>
+    </div>`;
+      }).join('');
+    }
+    function openLoadProtocol() {
+      document.getElementById('load-protocol-list').innerHTML = BASE_PROTOCOLS.map(p => {
+        const tK = p.meals.reduce((s, m) => s + m.foods.reduce((ss, fi) => ss + kcal(fi.id, fi.qty), 0), 0);
+        return `<div class="protocol-card" onclick="loadProtocolFromBase('${p.id}')">
+      <div style="font-family:var(--display);font-size:20px;margin-bottom:.25rem">${p.name}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:.5rem">${p.desc}</div>
+      <div style="font-size:12px;color:var(--text2)">${tK} kcal · ${p.meals.length} refeições</div>
+    </div>`;
+      }).join('');
+      openModal('modal-load-protocol');
+    }
+    function loadProtocolFromBase(id) {
+      const bp = BASE_PROTOCOLS.find(p => p.id === id); if (!bp) return;
+      const clone = JSON.parse(JSON.stringify(bp)); clone.id = uid(); clone.name = clone.name + ' (cópia)';
+      protocols.push(clone); saveAll(); closeModal('modal-load-protocol'); renderProtocols(); loadProtocolEditor(clone.id);
+      showToast('Protocolo carregado! Edite à vontade.', 'success');
+    }
+    function createBlankProtocol() {
+      const p = { id: uid(), name: 'Novo Protocolo', goal: 'manutencao', desc: '', meals: [{ name: 'Café da manhã', foods: [] }, { name: 'Almoço', foods: [] }, { name: 'Jantar', foods: [] }] };
+      protocols.push(p); saveAll(); renderProtocols(); loadProtocolEditor(p.id);
+    }
+    function loadProtocolEditor(id) {
+      const p = protocols.find(x => x.id == id) || BASE_PROTOCOLS.find(x => x.id == id); if (!p) return;
+      currentProtocolId = id;
+      const wrap = document.getElementById('protocol-editor-wrap'); wrap.style.display = 'block';
+      renderProtoEditor(p, BASE_PROTOCOLS.some(x => x.id == id));
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const selPFId = {};
+    function renderProtoEditor(p, isBase) {
+      const editor = document.getElementById('protocol-editor');
+      const tK = p.meals.reduce((s, m) => s + m.foods.reduce((ss, fi) => ss + kcal(fi.id, fi.qty), 0), 0);
+      const mealsHtml = p.meals.map((m, mi) => {
+        const rows = m.foods.map((fi, fii) => {
+          const food = foodById(fi.id); if (!food) return '';
+          return `<div class="proto-food-row">
+        <span class="proto-food-name">${food.name}</span>
+        <input class="proto-food-qty" type="number" value="${fi.qty}" ${isBase ? 'disabled' : ''} onchange="updatePF('${p.id}',${mi},${fii},this.value)"/>
+        <span class="proto-food-kcal">${kcal(fi.id, fi.qty)} kcal</span>
+        ${!isBase ? `<button class="rm-food" onclick="removePF('${p.id}',${mi},${fii})">✕</button>` : ''}
+      </div>`;
+        }).join('');
+        return `<div class="proto-meal">
+      <div class="proto-meal-hdr">
+        ${isBase ? `<span style="font-size:14px;font-weight:600;flex:1">${m.name}</span>` : `<input class="proto-meal-inp" value="${m.name}" onchange="renamePM('${p.id}',${mi},this.value)"/>`}
+        <span style="font-size:12px;color:var(--text3);margin-left:auto">${m.foods.reduce((s, fi) => s + kcal(fi.id, fi.qty), 0)} kcal</span>
+        ${!isBase ? `<button class="btn-sm danger" style="padding:4px 8px;font-size:11px;margin-left:8px" onclick="removePM('${p.id}',${mi})">✕</button>` : ''}
+      </div>
+      <div class="proto-meal-body">
+        ${rows || '<p style="font-size:12px;color:var(--text3)">Sem alimentos</p>'}
+        ${!isBase ? `<div class="add-food-row" style="margin-top:.5rem">
+          <div class="food-srch-wrap">
+            <input class="food-srch" id="pfsrch-${mi}" placeholder="🔍 Alimento..." oninput="filterPFDrop(${mi},'${p.id}')" onblur="setTimeout(()=>closePFDrop(${mi}),200)" style="font-size:12px;padding:7px 11px"/>
+            <div class="food-drop" id="pfdrop-${mi}"></div>
+          </div>
+          <input class="qty-inp" id="pfqty-${mi}" type="number" value="100" style="width:60px"/>
+          <button class="btn-sm lime" style="font-size:11px" onclick="addPF('${p.id}',${mi})">+ Add</button>
+        </div>`: ''}
+      </div>
+    </div>`;
+      }).join('');
+
+      const assignHtml = ptClients.map(c => {
+        const ini = c.nome.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        return `<button class="assign-pill" onclick="assignProto('${p.id}',${c.id})">${ini} · ${c.nome.split(' ')[0]}</button>`;
+      }).join('');
+
+      editor.innerHTML = `
+    <div class="proto-editor-hdr">
+      ${isBase
+          ? `<div style="font-family:var(--display);font-size:28px;letter-spacing:1px">${p.name}</div>`
+          : `<input class="proto-title-inp" value="${p.name}" onchange="renameProto('${p.id}',this.value)"/>`}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${isBase
+          ? `<button class="btn-primary" onclick="cloneProto('${p.id}')">📋 Clonar para editar</button>`
+          : `<button class="btn-secondary" onclick="addPM('${p.id}')">+ Refeição</button>
+            <button class="btn-primary" onclick="saveProtos()">💾 Salvar</button>
+            <button class="btn-sm danger" onclick="deleteProto('${p.id}')">Excluir</button>`}
+      </div>
+    </div>
+    ${isBase ? `<div style="padding:.6rem 1rem;background:rgba(255,170,59,.08);border:1px solid rgba(255,170,59,.2);border-radius:var(--radius);font-size:12px;color:var(--orange);margin-bottom:1rem">⚠️ Protocolo base — clique em "Clonar para editar" para personalizar</div>` : ''}
+    <div style="display:flex;gap:1rem;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap">
+      <div style="font-size:13px;color:var(--text2)">Total: <strong style="color:var(--lime);font-family:var(--display);font-size:20px">${tK}</strong> kcal</div>
+      ${!isBase ? `<select class="pt-filter" onchange="changeProtoGoal('${p.id}',this.value)">
+        <option value="emagrecimento" ${p.goal === 'emagrecimento' ? 'selected' : ''}>🔻 Emagrecimento</option>
+        <option value="hipertrofia" ${p.goal === 'hipertrofia' ? 'selected' : ''}>📈 Hipertrofia</option>
+        <option value="manutencao" ${p.goal === 'manutencao' ? 'selected' : ''}>⚖️ Manutenção</option>
+        <option value="definicao" ${p.goal === 'definicao' ? 'selected' : ''}>⚡ Definição</option>
+      </select>`: ''}
+    </div>
+    ${mealsHtml}
+    ${ptClients.length ? `<div class="assign-block"><div class="assign-title">Aplicar protocolo à dieta de um cliente</div><div class="assign-grid">${assignHtml}</div></div>` : ''}
+  `;
+    }
+    function filterPFDrop(mi, pid) {
+      const q = document.getElementById('pfsrch-' + mi).value.toLowerCase();
+      const drop = document.getElementById('pfdrop-' + mi);
+      if (!q) { drop.classList.remove('open'); return }
+      const res = FOOD_DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 10);
+      drop.innerHTML = res.map(f => `<div class="food-opt" onmousedown="selectPF(${mi},'${pid}',${f.id})"><span>${f.name}</span><span class="food-opt-kcal">${f.kcal100} kcal/100${f.unit}</span></div>`).join('');
+      drop.classList.toggle('open', res.length > 0);
+    }
+    function selectPF(mi, pid, fid) { selPFId[mi] = fid; document.getElementById('pfsrch-' + mi).value = foodById(fid).name; closePFDrop(mi) }
+    function closePFDrop(mi) { const d = document.getElementById('pfdrop-' + mi); if (d) d.classList.remove('open') }
+    function addPF(pid, mi) {
+      const fid = selPFId[mi]; const qty = parseFloat(document.getElementById('pfqty-' + mi).value) || 100;
+      if (!fid) { showToast('Selecione um alimento', 'error'); return }
+      const p = protocols.find(x => x.id == pid); if (!p) return;
+      p.meals[mi].foods.push({ id: fid, qty }); selPFId[mi] = null; saveAll(); renderProtoEditor(p, false);
+    }
+    function removePF(pid, mi, fii) { const p = protocols.find(x => x.id == pid); if (!p) return; p.meals[mi].foods.splice(fii, 1); saveAll(); renderProtoEditor(p, false) }
+    function updatePF(pid, mi, fii, val) { const p = protocols.find(x => x.id == pid); if (!p) return; p.meals[mi].foods[fii].qty = parseFloat(val) || 100; saveAll() }
+    function renamePM(pid, mi, val) { const p = protocols.find(x => x.id == pid); if (p) p.meals[mi].name = val, saveAll() }
+    function addPM(pid) { const p = protocols.find(x => x.id == pid); if (!p) return; p.meals.push({ name: `Refeição ${p.meals.length + 1}`, foods: [] }); saveAll(); renderProtoEditor(p, false) }
+    function removePM(pid, mi) { const p = protocols.find(x => x.id == pid); if (!p) return; if (p.meals.length <= 1) { showToast('Precisa ter ao menos 1 refeição', 'error'); return } p.meals.splice(mi, 1); saveAll(); renderProtoEditor(p, false) }
+    function renameProto(pid, val) { const p = protocols.find(x => x.id == pid); if (p) { p.name = val; saveAll(); renderProtocols() } }
+    function changeProtoGoal(pid, val) { const p = protocols.find(x => x.id == pid); if (p) { p.goal = val; saveAll() } }
+    function saveProtos() { saveAll(); renderProtocols(); showToast('Protocolo salvo! ✓', 'success') }
+    function deleteProto(pid) { if (!confirm('Excluir este protocolo?')) return; protocols = protocols.filter(x => x.id != pid); saveAll(); document.getElementById('protocol-editor-wrap').style.display = 'none'; renderProtocols(); showToast('Protocolo excluído', 'error') }
+    function cloneProto(pid) {
+      const src = BASE_PROTOCOLS.find(x => x.id == pid) || protocols.find(x => x.id == pid); if (!src) return;
+      const clone = JSON.parse(JSON.stringify(src)); clone.id = uid(); clone.name = clone.name + ' (cópia)';
+      protocols.push(clone); saveAll(); renderProtocols(); loadProtocolEditor(clone.id); showToast('Clonado! Edite à vontade.', 'success');
+    }
+    function assignProto(pid, clientId) {
+      const src = BASE_PROTOCOLS.find(x => x.id == pid) || protocols.find(x => x.id == pid);
+      if (!src || !confirm(`Aplicar "${src.name}" à dieta deste cliente? A dieta atual será substituída.`)) return;
+      diets[clientId] = { protocolId: pid, meals: JSON.parse(JSON.stringify(src.meals)) };
+      saveAll(); showToast('Protocolo aplicado ao cliente! ✓', 'success');
+    }
+
+    // ════════════════════════════
+    // LANDING CHART
+    // ════════════════════════════
+    function drawBentoChart() {
+      const canvas = document.getElementById('bento-chart'); if (!canvas) return;
+      const data = [78, 77.4, 76.8, 76.1, 75.5, 74.8, 74.2, 73.7, 73.1, 72.8, 72.4];
+      const ctx = canvas.getContext('2d'); const W = canvas.offsetWidth || 260; const H = 65;
+      canvas.width = W; canvas.height = H;
+      const mn = Math.min(...data) - .5, mx = Math.max(...data) + .5, rng = mx - mn;
+      const pts = data.map((v, i) => ({ x: 8 + (i / (data.length - 1)) * (W - 16), y: H - ((v - mn) / rng) * (H - 12) - 6 }));
+      ctx.clearRect(0, 0, W, H);
+      const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(200,245,58,.25)'); g.addColorStop(1, 'rgba(200,245,58,0)');
+      ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(pts[pts.length - 1].x, H); ctx.lineTo(pts[0].x, H); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.strokeStyle = '#c8f53a'; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+      const last = pts[pts.length - 1]; ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI * 2); ctx.fillStyle = '#c8f53a'; ctx.fill();
+    }
+
+    // ════════════════════════════
+    // INIT
+    // ════════════════════════════
+    window.addEventListener('load', () => {
+      saveAll();
+      setTimeout(drawBentoChart, 200);
+      document.querySelectorAll('.db-fill').forEach(bar => { const w = bar.style.width; bar.style.width = '0'; setTimeout(() => { bar.style.width = w }, 600) });
+      if (currentUser) {
+        if (currentUser.perfil === 'admin') goToPersonal(); else goTo('list');
+      }
+    });
+  </script>
+</body>
+
+</html>
