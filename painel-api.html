@@ -1976,7 +1976,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      overflow-y: auto
+      overflow: visible
     }
 
     .diet-top-card {
@@ -2043,7 +2043,7 @@
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      overflow: hidden
+      overflow: visible
     }
 
     .meal-hdr {
@@ -2052,7 +2052,8 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition: background .15s
+      transition: background .15s;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0
     }
 
     .meal-hdr:hover {
@@ -2088,7 +2089,8 @@
     .meal-body {
       border-top: 1px solid var(--border);
       padding: 1rem 1.25rem;
-      display: none
+      display: none;
+      overflow: visible
     }
 
     .meal-body.open {
@@ -2157,7 +2159,8 @@
     .food-srch-wrap {
       position: relative;
       flex: 1;
-      min-width: 160px
+      min-width: 160px;
+      z-index: 10
     }
 
     .food-srch {
@@ -2179,17 +2182,17 @@
 
     .food-drop {
       position: absolute;
-      top: 100%;
+      top: calc(100% + 4px);
       left: 0;
       right: 0;
       background: var(--bg3);
       border: 1px solid var(--border2);
       border-radius: var(--radius);
-      margin-top: 4px;
       max-height: 200px;
       overflow-y: auto;
-      z-index: 20;
-      display: none
+      z-index: 100;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4)
     }
 
     .food-drop.open {
@@ -2823,7 +2826,6 @@
           <div class="form-group"><label>Perfil</label>
             <select id="reg-perfil">
               <option value="usuario">Usuário</option>
-              <option value="admin">Administrador (Personal)</option>
             </select>
           </div>
           <button class="btn-submit" id="btn-register" onclick="doRegister()">Criar conta →</button>
@@ -3201,101 +3203,267 @@
     const OBJ_LABEL = { emagrecer: '🔻 Emagrecer', ganhar: '📈 Ganhar massa', manter: '⚖️ Manter', definir: '⚡ Definir' };
 
     const FOOD_DB = [
-      { id: 1, name: 'Frango grelhado', unit: 'g', kcal100: 165, p: 31, c: 0, f: 3.6 },
-      { id: 2, name: 'Carne bovina magra', unit: 'g', kcal100: 215, p: 26, c: 0, f: 12 },
-      { id: 3, name: 'Atum em água', unit: 'g', kcal100: 116, p: 25, c: 0, f: 1 },
-      { id: 4, name: 'Tilápia', unit: 'g', kcal100: 128, p: 26, c: 0, f: 2.7 },
-      { id: 5, name: 'Ovos inteiros', unit: 'g', kcal100: 155, p: 13, c: 1.1, f: 11 },
-      { id: 6, name: 'Clara de ovo', unit: 'g', kcal100: 52, p: 11, c: 0.7, f: 0.2 },
-      { id: 7, name: 'Peito de peru', unit: 'g', kcal100: 135, p: 29, c: 0, f: 1 },
-      { id: 8, name: 'Whey protein', unit: 'g', kcal100: 370, p: 75, c: 10, f: 5 },
-      { id: 9, name: 'Cottage', unit: 'g', kcal100: 98, p: 11, c: 3.4, f: 4.3 },
-      { id: 10, name: 'Iogurte grego integral', unit: 'g', kcal100: 97, p: 9, c: 4, f: 5 },
-      { id: 11, name: 'Arroz branco cozido', unit: 'g', kcal100: 130, p: 2.7, c: 28, f: 0.3 },
-      { id: 12, name: 'Arroz integral cozido', unit: 'g', kcal100: 123, p: 2.7, c: 25, f: 1 },
-      { id: 13, name: 'Batata doce cozida', unit: 'g', kcal100: 90, p: 2, c: 21, f: 0.1 },
-      { id: 14, name: 'Mandioca cozida', unit: 'g', kcal100: 125, p: 1, c: 30, f: 0.3 },
-      { id: 15, name: 'Macarrão integral cozido', unit: 'g', kcal100: 142, p: 5, c: 27, f: 1.1 },
-      { id: 16, name: 'Pão integral', unit: 'g', kcal100: 247, p: 8, c: 41, f: 4.2 },
-      { id: 17, name: 'Aveia em flocos', unit: 'g', kcal100: 389, p: 17, c: 66, f: 7 },
-      { id: 18, name: 'Feijão cozido', unit: 'g', kcal100: 77, p: 5, c: 14, f: 0.5 },
-      { id: 19, name: 'Lentilha cozida', unit: 'g', kcal100: 116, p: 9, c: 20, f: 0.4 },
-      { id: 20, name: 'Quinoa cozida', unit: 'g', kcal100: 120, p: 4.4, c: 21, f: 2 },
-      { id: 21, name: 'Brócolis', unit: 'g', kcal100: 34, p: 2.8, c: 7, f: 0.4 },
-      { id: 22, name: 'Couve-flor', unit: 'g', kcal100: 25, p: 2, c: 5, f: 0.3 },
-      { id: 23, name: 'Espinafre', unit: 'g', kcal100: 23, p: 2.9, c: 3.6, f: 0.4 },
-      { id: 24, name: 'Alface', unit: 'g', kcal100: 15, p: 1.4, c: 2.9, f: 0.2 },
-      { id: 25, name: 'Tomate', unit: 'g', kcal100: 18, p: 0.9, c: 3.9, f: 0.2 },
-      { id: 26, name: 'Pepino', unit: 'g', kcal100: 16, p: 0.7, c: 3.6, f: 0.1 },
-      { id: 27, name: 'Cenoura', unit: 'g', kcal100: 41, p: 0.9, c: 10, f: 0.2 },
-      { id: 28, name: 'Abobrinha', unit: 'g', kcal100: 17, p: 1.2, c: 3.1, f: 0.3 },
-      { id: 29, name: 'Vagem', unit: 'g', kcal100: 31, p: 1.8, c: 7, f: 0.1 },
-      { id: 30, name: 'Azeite de oliva', unit: 'ml', kcal100: 884, p: 0, c: 0, f: 100 },
-      { id: 31, name: 'Abacate', unit: 'g', kcal100: 160, p: 2, c: 9, f: 15 },
-      { id: 32, name: 'Pasta de amendoim', unit: 'g', kcal100: 588, p: 25, c: 20, f: 50 },
-      { id: 33, name: 'Chia', unit: 'g', kcal100: 486, p: 17, c: 42, f: 31 },
-      { id: 34, name: 'Castanha-do-Pará', unit: 'g', kcal100: 659, p: 14, c: 12, f: 67 },
-      { id: 35, name: 'Nozes', unit: 'g', kcal100: 654, p: 15, c: 14, f: 65 },
-      { id: 36, name: 'Banana', unit: 'g', kcal100: 89, p: 1.1, c: 23, f: 0.3 },
-      { id: 37, name: 'Maçã', unit: 'g', kcal100: 52, p: 0.3, c: 14, f: 0.2 },
-      { id: 38, name: 'Laranja', unit: 'g', kcal100: 47, p: 0.9, c: 12, f: 0.1 },
-      { id: 39, name: 'Morango', unit: 'g', kcal100: 33, p: 0.7, c: 8, f: 0.3 },
-      { id: 40, name: 'Manga', unit: 'g', kcal100: 60, p: 0.8, c: 15, f: 0.4 },
-      { id: 41, name: 'Leite integral', unit: 'ml', kcal100: 61, p: 3.2, c: 4.8, f: 3.3 },
-      { id: 42, name: 'Queijo mussarela', unit: 'g', kcal100: 280, p: 21, c: 2.2, f: 22 },
-      { id: 43, name: 'Grão de bico cozido', unit: 'g', kcal100: 164, p: 8.9, c: 27, f: 2.6 },
-      { id: 44, name: 'Batata inglesa cozida', unit: 'g', kcal100: 87, p: 1.9, c: 20, f: 0.1 },
-      { id: 45, name: 'Mel', unit: 'g', kcal100: 304, p: 0.3, c: 82, f: 0 },
-      { id: 46, name: 'Granola', unit: 'g', kcal100: 489, p: 9, c: 64, f: 20 },
-      { id: 47, name: 'Salmão', unit: 'g', kcal100: 208, p: 20, c: 0, f: 13 },
-      { id: 48, name: 'Amendoim torrado', unit: 'g', kcal100: 567, p: 26, c: 16, f: 49 },
-      { id: 49, name: 'Linhaça', unit: 'g', kcal100: 534, p: 18, c: 29, f: 42 },
-      { id: 50, name: 'Iogurte natural desnatado', unit: 'g', kcal100: 56, p: 5.7, c: 7.8, f: 0.2 },
+      // ── PROTEÍNAS — CARNES E AVES ──
+      { id: 1, name: 'Frango grelhado (peito)', unit: 'g', kcal100: 159, p: 32, c: 0, f: 2.7 },
+      { id: 2, name: 'Frango cozido (peito)', unit: 'g', kcal100: 153, p: 31, c: 0, f: 2.5 },
+      { id: 3, name: 'Frango assado (coxa sem pele)', unit: 'g', kcal100: 181, p: 26, c: 0, f: 8.2 },
+      { id: 4, name: 'Peito de frango cru', unit: 'g', kcal100: 119, p: 22, c: 0, f: 3.2 },
+      { id: 5, name: 'Carne bovina (patinho cozido)', unit: 'g', kcal100: 219, p: 27, c: 0, f: 11.7 },
+      { id: 6, name: 'Carne bovina (alcatra grelhada)', unit: 'g', kcal100: 205, p: 29, c: 0, f: 9.8 },
+      { id: 7, name: 'Carne moída (patinho)', unit: 'g', kcal100: 196, p: 26, c: 0, f: 10 },
+      { id: 8, name: 'Carne suína (lombo grelhado)', unit: 'g', kcal100: 182, p: 27, c: 0, f: 8.1 },
+      { id: 9, name: 'Carne suína (pernil cozido)', unit: 'g', kcal100: 198, p: 24, c: 0, f: 11 },
+      { id: 10, name: 'Peito de peru grelhado', unit: 'g', kcal100: 132, p: 29, c: 0, f: 1.5 },
+      { id: 11, name: 'Carne seca (jabá) cozida', unit: 'g', kcal100: 261, p: 31, c: 0, f: 15 },
+      { id: 12, name: 'Linguiça de frango grelhada', unit: 'g', kcal100: 200, p: 18, c: 2, f: 13 },
+      { id: 13, name: 'Presunto (fatia magra)', unit: 'g', kcal100: 109, p: 18, c: 1.6, f: 3.3 },
+
+      // ── PROTEÍNAS — PEIXES E FRUTOS DO MAR ──
+      { id: 14, name: 'Atum em água (lata)', unit: 'g', kcal100: 108, p: 24, c: 0, f: 1 },
+      { id: 15, name: 'Atum em óleo (escorrido)', unit: 'g', kcal100: 198, p: 22, c: 0, f: 12 },
+      { id: 16, name: 'Salmão grelhado', unit: 'g', kcal100: 182, p: 25, c: 0, f: 9 },
+      { id: 17, name: 'Salmão cru', unit: 'g', kcal100: 142, p: 20, c: 0, f: 6.3 },
+      { id: 18, name: 'Tilápia grelhada', unit: 'g', kcal100: 128, p: 26, c: 0, f: 2.7 },
+      { id: 19, name: 'Tilápia cozida', unit: 'g', kcal100: 119, p: 24, c: 0, f: 2.2 },
+      { id: 20, name: 'Sardinha em água', unit: 'g', kcal100: 151, p: 23, c: 0, f: 6 },
+      { id: 21, name: 'Sardinha em azeite (escorrida)', unit: 'g', kcal100: 185, p: 21, c: 0, f: 11 },
+      { id: 22, name: 'Bacalhau cozido', unit: 'g', kcal100: 154, p: 35, c: 0, f: 1.2 },
+      { id: 23, name: 'Camarão cozido', unit: 'g', kcal100: 99, p: 21, c: 0.9, f: 1.1 },
+      { id: 24, name: 'Merluza grelhada', unit: 'g', kcal100: 96, p: 20, c: 0, f: 1.5 },
+      { id: 25, name: 'Filé de panga cozido', unit: 'g', kcal100: 90, p: 18, c: 0, f: 2 },
+      { id: 26, name: 'Truta grelhada', unit: 'g', kcal100: 168, p: 24, c: 0, f: 7.8 },
+
+      // ── PROTEÍNAS — OVOS E LATICÍNIOS ──
+      { id: 27, name: 'Ovo inteiro cozido', unit: 'g', kcal100: 155, p: 13, c: 1.1, f: 11 },
+      { id: 28, name: 'Ovo inteiro mexido (s/ gordura)', unit: 'g', kcal100: 149, p: 10, c: 1.6, f: 11 },
+      { id: 29, name: 'Clara de ovo cozida', unit: 'g', kcal100: 52, p: 11, c: 0.7, f: 0.2 },
+      { id: 30, name: 'Gema de ovo', unit: 'g', kcal100: 322, p: 16, c: 3.6, f: 27 },
+      { id: 31, name: 'Whey protein (concentrado)', unit: 'g', kcal100: 362, p: 74, c: 9, f: 5 },
+      { id: 32, name: 'Whey protein (isolado)', unit: 'g', kcal100: 356, p: 86, c: 3, f: 1 },
+      { id: 33, name: 'Proteína vegetal (soja isolada)', unit: 'g', kcal100: 338, p: 80, c: 5, f: 3 },
+      { id: 34, name: 'Iogurte grego integral', unit: 'g', kcal100: 97, p: 9, c: 4, f: 5 },
+      { id: 35, name: 'Iogurte grego desnatado', unit: 'g', kcal100: 59, p: 10, c: 4, f: 0.4 },
+      { id: 36, name: 'Iogurte natural integral', unit: 'g', kcal100: 61, p: 3.5, c: 4.7, f: 3.3 },
+      { id: 37, name: 'Iogurte natural desnatado', unit: 'g', kcal100: 43, p: 4.3, c: 5, f: 0.2 },
+      { id: 38, name: 'Leite integral', unit: 'ml', kcal100: 61, p: 3.2, c: 4.8, f: 3.3 },
+      { id: 39, name: 'Leite semidesnatado', unit: 'ml', kcal100: 46, p: 3.3, c: 4.8, f: 1.5 },
+      { id: 40, name: 'Leite desnatado', unit: 'ml', kcal100: 35, p: 3.4, c: 5, f: 0.1 },
+      { id: 41, name: 'Leite vegetal (amêndoas)', unit: 'ml', kcal100: 17, p: 0.6, c: 0.3, f: 1.5 },
+      { id: 42, name: 'Cottage (light)', unit: 'g', kcal100: 74, p: 12, c: 2.8, f: 1.6 },
+      { id: 43, name: 'Cottage integral', unit: 'g', kcal100: 98, p: 11, c: 3.4, f: 4.3 },
+      { id: 44, name: 'Ricota', unit: 'g', kcal100: 136, p: 11, c: 3, f: 9 },
+      { id: 45, name: 'Queijo mussarela', unit: 'g', kcal100: 257, p: 18, c: 2.4, f: 19 },
+      { id: 46, name: 'Queijo prato', unit: 'g', kcal100: 328, p: 22, c: 2.3, f: 26 },
+      { id: 47, name: 'Queijo coalho', unit: 'g', kcal100: 264, p: 21, c: 1.5, f: 19 },
+      { id: 48, name: 'Queijo ricota defumada', unit: 'g', kcal100: 174, p: 12, c: 3.2, f: 13 },
+      { id: 49, name: 'Requeijão cremoso', unit: 'g', kcal100: 229, p: 8, c: 2.5, f: 21 },
+      { id: 50, name: 'Cream cheese', unit: 'g', kcal100: 321, p: 7, c: 4.1, f: 30 },
+
+      // ── CARBOIDRATOS — CEREAIS E GRÃOS ──
+      { id: 51, name: 'Arroz branco cozido', unit: 'g', kcal100: 128, p: 2.5, c: 28, f: 0.3 },
+      { id: 52, name: 'Arroz integral cozido', unit: 'g', kcal100: 124, p: 2.6, c: 25, f: 1 },
+      { id: 53, name: 'Arroz parboilizado cozido', unit: 'g', kcal100: 131, p: 2.7, c: 28, f: 0.3 },
+      { id: 54, name: 'Aveia em flocos finos', unit: 'g', kcal100: 366, p: 13, c: 62, f: 7 },
+      { id: 55, name: 'Aveia em flocos grossos', unit: 'g', kcal100: 361, p: 13, c: 61, f: 6.5 },
+      { id: 56, name: 'Farinha de aveia', unit: 'g', kcal100: 375, p: 14, c: 63, f: 7.5 },
+      { id: 57, name: 'Granola (sem açúcar)', unit: 'g', kcal100: 415, p: 10, c: 58, f: 17 },
+      { id: 58, name: 'Macarrão branco cozido', unit: 'g', kcal100: 150, p: 5.3, c: 30, f: 0.9 },
+      { id: 59, name: 'Macarrão integral cozido', unit: 'g', kcal100: 139, p: 5.5, c: 26, f: 0.9 },
+      { id: 60, name: 'Quinoa cozida', unit: 'g', kcal100: 120, p: 4.4, c: 21, f: 1.9 },
+      { id: 61, name: 'Lentilha cozida', unit: 'g', kcal100: 116, p: 9, c: 20, f: 0.4 },
+      { id: 62, name: 'Grão de bico cozido', unit: 'g', kcal100: 164, p: 8.9, c: 27, f: 2.6 },
+      { id: 63, name: 'Feijão carioca cozido', unit: 'g', kcal100: 77, p: 5, c: 14, f: 0.5 },
+      { id: 64, name: 'Feijão preto cozido', unit: 'g', kcal100: 81, p: 5.4, c: 14, f: 0.5 },
+      { id: 65, name: 'Feijão branco cozido', unit: 'g', kcal100: 118, p: 7.9, c: 22, f: 0.3 },
+      { id: 66, name: 'Ervilha cozida', unit: 'g', kcal100: 81, p: 5.4, c: 14, f: 0.4 },
+      { id: 67, name: 'Soja cozida', unit: 'g', kcal100: 141, p: 14, c: 11, f: 5.7 },
+      { id: 68, name: 'Tapioca (goma hidratada)', unit: 'g', kcal100: 98, p: 0.1, c: 24, f: 0.1 },
+      { id: 69, name: 'Fubá de milho', unit: 'g', kcal100: 355, p: 7.9, c: 74, f: 2.8 },
+      { id: 70, name: 'Cuscuz de milho cozido', unit: 'g', kcal100: 92, p: 1.7, c: 20, f: 0.5 },
+      { id: 71, name: 'Polenta cozida', unit: 'g', kcal100: 82, p: 1.8, c: 17, f: 0.4 },
+      { id: 72, name: 'Farinha de mandioca torrada', unit: 'g', kcal100: 361, p: 1.7, c: 88, f: 0.3 },
+
+      // ── CARBOIDRATOS — PÃES E MASSAS ──
+      { id: 73, name: 'Pão francês', unit: 'g', kcal100: 150, p: 4.1, c: 29.3, f: 2.7 },
+      { id: 74, name: 'Pão integral (fatiado)', unit: 'g', kcal100: 243, p: 9.5, c: 41, f: 4 },
+      { id: 75, name: 'Pão de forma branco', unit: 'g', kcal100: 271, p: 7.6, c: 50, f: 4.8 },
+      { id: 76, name: 'Pão de queijo (assado)', unit: 'g', kcal100: 295, p: 6.2, c: 39, f: 13 },
+      { id: 77, name: 'Biscoito de arroz (sal)', unit: 'g', kcal100: 392, p: 7.2, c: 84, f: 3.2 },
+      { id: 78, name: 'Cream cracker integral', unit: 'g', kcal100: 421, p: 9.8, c: 68, f: 13 },
+
+      // ── CARBOIDRATOS — TUBÉRCULOS E RAÍZES ──
+      { id: 79, name: 'Batata doce cozida', unit: 'g', kcal100: 86, p: 1.6, c: 20, f: 0.1 },
+      { id: 80, name: 'Batata doce assada', unit: 'g', kcal100: 90, p: 2, c: 21, f: 0.1 },
+      { id: 81, name: 'Batata inglesa cozida', unit: 'g', kcal100: 82, p: 1.8, c: 19, f: 0.1 },
+      { id: 82, name: 'Batata inglesa assada', unit: 'g', kcal100: 93, p: 2.5, c: 21, f: 0.1 },
+      { id: 83, name: 'Mandioca cozida', unit: 'g', kcal100: 125, p: 1, c: 30, f: 0.3 },
+      { id: 84, name: 'Inhame cozido', unit: 'g', kcal100: 116, p: 1.7, c: 27, f: 0.1 },
+      { id: 85, name: 'Cará cozido', unit: 'g', kcal100: 100, p: 1.5, c: 23, f: 0.1 },
+      { id: 86, name: 'Milho verde cozido', unit: 'g', kcal100: 86, p: 3.3, c: 18, f: 1.2 },
+
+      // ── VEGETAIS ──
+      { id: 87, name: 'Brócolis cozido', unit: 'g', kcal100: 28, p: 2.3, c: 5.2, f: 0.4 },
+      { id: 88, name: 'Couve-flor cozida', unit: 'g', kcal100: 22, p: 1.8, c: 4.2, f: 0.2 },
+      { id: 89, name: 'Espinafre cozido', unit: 'g', kcal100: 21, p: 2.6, c: 2.9, f: 0.4 },
+      { id: 90, name: 'Espinafre cru', unit: 'g', kcal100: 23, p: 2.9, c: 3.6, f: 0.4 },
+      { id: 91, name: 'Alface', unit: 'g', kcal100: 11, p: 1.3, c: 2.1, f: 0.2 },
+      { id: 92, name: 'Tomate', unit: 'g', kcal100: 18, p: 0.9, c: 3.9, f: 0.2 },
+      { id: 93, name: 'Tomate cereja', unit: 'g', kcal100: 18, p: 0.9, c: 3.9, f: 0.2 },
+      { id: 94, name: 'Pepino', unit: 'g', kcal100: 16, p: 0.7, c: 3.6, f: 0.1 },
+      { id: 95, name: 'Cenoura crua', unit: 'g', kcal100: 34, p: 0.8, c: 7.9, f: 0.2 },
+      { id: 96, name: 'Cenoura cozida', unit: 'g', kcal100: 41, p: 0.9, c: 9.6, f: 0.3 },
+      { id: 97, name: 'Abobrinha cozida', unit: 'g', kcal100: 15, p: 1.1, c: 2.5, f: 0.2 },
+      { id: 98, name: 'Vagem cozida', unit: 'g', kcal100: 28, p: 1.7, c: 6.4, f: 0.1 },
+      { id: 99, name: 'Couve manteiga', unit: 'g', kcal100: 25, p: 3.2, c: 3.3, f: 0.7 },
+      { id: 100, name: 'Repolho', unit: 'g', kcal100: 24, p: 1.2, c: 5.4, f: 0.1 },
+      { id: 101, name: 'Rúcula', unit: 'g', kcal100: 25, p: 2.6, c: 3.7, f: 0.7 },
+      { id: 102, name: 'Beterraba cozida', unit: 'g', kcal100: 43, p: 1.7, c: 9.6, f: 0.1 },
+      { id: 103, name: 'Chuchu cozido', unit: 'g', kcal100: 22, p: 0.8, c: 5.1, f: 0.1 },
+      { id: 104, name: 'Berinjela cozida', unit: 'g', kcal100: 24, p: 0.8, c: 5.7, f: 0.1 },
+      { id: 105, name: 'Pimentão verde', unit: 'g', kcal100: 24, p: 0.9, c: 5.3, f: 0.2 },
+      { id: 106, name: 'Pimentão vermelho', unit: 'g', kcal100: 31, p: 1, c: 6.7, f: 0.3 },
+      { id: 107, name: 'Cebola crua', unit: 'g', kcal100: 38, p: 1.2, c: 8.5, f: 0.1 },
+      { id: 108, name: 'Alho', unit: 'g', kcal100: 149, p: 6.4, c: 33, f: 0.5 },
+      { id: 109, name: 'Aspargo cozido', unit: 'g', kcal100: 22, p: 2.4, c: 3.9, f: 0.1 },
+      { id: 110, name: 'Cogumelo champignon', unit: 'g', kcal100: 25, p: 2.5, c: 4.1, f: 0.3 },
+      { id: 111, name: 'Palmito (conserva)', unit: 'g', kcal100: 28, p: 2.7, c: 5, f: 0.4 },
+      { id: 112, name: 'Ervilha fresca', unit: 'g', kcal100: 73, p: 5, c: 13, f: 0.4 },
+      { id: 113, name: 'Cebola roxa', unit: 'g', kcal100: 40, p: 1, c: 9, f: 0.1 },
+      { id: 114, name: 'Alface americana', unit: 'g', kcal100: 12, p: 1, c: 2.4, f: 0.2 },
+      { id: 115, name: 'Agrião', unit: 'g', kcal100: 16, p: 1.7, c: 2.1, f: 0.3 },
+      { id: 116, name: 'Aipo (salsão)', unit: 'g', kcal100: 16, p: 0.7, c: 3, f: 0.2 },
+
+      // ── FRUTAS ──
+      { id: 117, name: 'Banana prata', unit: 'g', kcal100: 89, p: 1.1, c: 23, f: 0.3 },
+      { id: 118, name: 'Banana nanica', unit: 'g', kcal100: 92, p: 1.3, c: 24, f: 0.1 },
+      { id: 119, name: 'Maçã fuji', unit: 'g', kcal100: 56, p: 0.3, c: 15, f: 0.2 },
+      { id: 120, name: 'Maçã verde', unit: 'g', kcal100: 52, p: 0.3, c: 14, f: 0.2 },
+      { id: 121, name: 'Laranja pera', unit: 'g', kcal100: 47, p: 0.9, c: 11, f: 0.1 },
+      { id: 122, name: 'Laranja bahia', unit: 'g', kcal100: 42, p: 0.9, c: 10, f: 0.1 },
+      { id: 123, name: 'Morango', unit: 'g', kcal100: 32, p: 0.7, c: 7.7, f: 0.3 },
+      { id: 124, name: 'Manga palmer', unit: 'g', kcal100: 57, p: 0.8, c: 14, f: 0.3 },
+      { id: 125, name: 'Melancia', unit: 'g', kcal100: 29, p: 0.6, c: 7.4, f: 0.1 },
+      { id: 126, name: 'Melão', unit: 'g', kcal100: 29, p: 0.8, c: 7, f: 0.1 },
+      { id: 127, name: 'Abacaxi', unit: 'g', kcal100: 48, p: 0.9, c: 12, f: 0.1 },
+      { id: 128, name: 'Uva niágara', unit: 'g', kcal100: 67, p: 0.6, c: 16, f: 0.4 },
+      { id: 129, name: 'Kiwi', unit: 'g', kcal100: 55, p: 1, c: 13, f: 0.4 },
+      { id: 130, name: 'Mamão formosa', unit: 'g', kcal100: 40, p: 0.5, c: 10, f: 0.1 },
+      { id: 131, name: 'Mamão papaia', unit: 'g', kcal100: 45, p: 0.5, c: 11, f: 0.1 },
+      { id: 132, name: 'Pera', unit: 'g', kcal100: 55, p: 0.4, c: 14, f: 0.1 },
+      { id: 133, name: 'Pêssego', unit: 'g', kcal100: 39, p: 0.9, c: 9.5, f: 0.2 },
+      { id: 134, name: 'Goiaba vermelha', unit: 'g', kcal100: 54, p: 2.5, c: 12, f: 0.9 },
+      { id: 135, name: 'Acerola', unit: 'g', kcal100: 33, p: 0.9, c: 7.9, f: 0.2 },
+      { id: 136, name: 'Caju', unit: 'g', kcal100: 43, p: 0.9, c: 9.8, f: 0.2 },
+      { id: 137, name: 'Abacate', unit: 'g', kcal100: 96, p: 1.2, c: 6, f: 8.4 },
+      { id: 138, name: 'Maracujá (polpa)', unit: 'g', kcal100: 68, p: 2.4, c: 14, f: 0.7 },
+      { id: 139, name: 'Limão (suco)', unit: 'ml', kcal100: 22, p: 0.5, c: 7.3, f: 0.2 },
+      { id: 140, name: 'Framboesa', unit: 'g', kcal100: 52, p: 1.2, c: 12, f: 0.7 },
+      { id: 141, name: 'Mirtilo (blueberry)', unit: 'g', kcal100: 57, p: 0.7, c: 14, f: 0.3 },
+      { id: 142, name: 'Tangerina (mexerica)', unit: 'g', kcal100: 37, p: 0.8, c: 8.9, f: 0.2 },
+
+      // ── GORDURAS SAUDÁVEIS E SEMENTES ──
+      { id: 143, name: 'Azeite de oliva extra virgem', unit: 'ml', kcal100: 884, p: 0, c: 0, f: 100 },
+      { id: 144, name: 'Óleo de coco', unit: 'ml', kcal100: 862, p: 0, c: 0, f: 100 },
+      { id: 145, name: 'Óleo de girassol', unit: 'ml', kcal100: 900, p: 0, c: 0, f: 100 },
+      { id: 146, name: 'Manteiga', unit: 'g', kcal100: 717, p: 0.9, c: 0.1, f: 81 },
+      { id: 147, name: 'Pasta de amendoim integral', unit: 'g', kcal100: 593, p: 26, c: 20, f: 50 },
+      { id: 148, name: 'Pasta de amêndoas', unit: 'g', kcal100: 614, p: 21, c: 20, f: 55 },
+      { id: 149, name: 'Chia (semente)', unit: 'g', kcal100: 486, p: 17, c: 42, f: 31 },
+      { id: 150, name: 'Linhaça dourada', unit: 'g', kcal100: 534, p: 18, c: 29, f: 42 },
+      { id: 151, name: 'Linhaça marrom', unit: 'g', kcal100: 510, p: 17, c: 28, f: 40 },
+      { id: 152, name: 'Gergelim', unit: 'g', kcal100: 573, p: 18, c: 23, f: 50 },
+      { id: 153, name: 'Semente de abóbora', unit: 'g', kcal100: 559, p: 30, c: 11, f: 49 },
+      { id: 154, name: 'Semente de girassol', unit: 'g', kcal100: 584, p: 21, c: 20, f: 51 },
+      { id: 155, name: 'Amendoim torrado (s/ sal)', unit: 'g', kcal100: 567, p: 26, c: 16, f: 49 },
+      { id: 156, name: 'Amêndoas', unit: 'g', kcal100: 579, p: 21, c: 22, f: 50 },
+      { id: 157, name: 'Castanha-do-Pará', unit: 'g', kcal100: 656, p: 14, c: 12, f: 66 },
+      { id: 158, name: 'Castanha de caju torrada', unit: 'g', kcal100: 553, p: 18, c: 30, f: 44 },
+      { id: 159, name: 'Nozes', unit: 'g', kcal100: 654, p: 15, c: 14, f: 65 },
+      { id: 160, name: 'Pistache torrado (s/ sal)', unit: 'g', kcal100: 562, p: 21, c: 28, f: 45 },
+      { id: 161, name: 'Macadâmia', unit: 'g', kcal100: 718, p: 8, c: 14, f: 76 },
+      { id: 162, name: 'Tahine (pasta de gergelim)', unit: 'g', kcal100: 592, p: 17, c: 21, f: 53 },
+
+      // ── CARBOIDRATOS SIMPLES / OUTROS ──
+      { id: 163, name: 'Mel', unit: 'g', kcal100: 304, p: 0.3, c: 82, f: 0 },
+      { id: 164, name: 'Açúcar cristal', unit: 'g', kcal100: 387, p: 0, c: 100, f: 0 },
+      { id: 165, name: 'Açúcar mascavo', unit: 'g', kcal100: 364, p: 0, c: 94, f: 0 },
+      { id: 166, name: 'Adoçante stevia (1 sachê ~1g)', unit: 'g', kcal100: 20, p: 0, c: 5, f: 0 },
+
+      // ── BEBIDAS E SUPLEMENTOS ──
+      { id: 167, name: 'Leite de amêndoas (sem açúcar)', unit: 'ml', kcal100: 17, p: 0.6, c: 0.3, f: 1.5 },
+      { id: 168, name: 'Leite de aveia', unit: 'ml', kcal100: 40, p: 1, c: 7, f: 1 },
+      { id: 169, name: 'Leite de coco (caixinha)', unit: 'ml', kcal100: 185, p: 1.8, c: 4.3, f: 19 },
+      { id: 170, name: 'Suco de laranja natural', unit: 'ml', kcal100: 44, p: 0.7, c: 11, f: 0.2 },
+      { id: 171, name: 'Água de coco natural', unit: 'ml', kcal100: 19, p: 0.7, c: 4.4, f: 0.2 },
+      { id: 172, name: 'Café preto (sem açúcar)', unit: 'ml', kcal100: 2, p: 0.3, c: 0, f: 0 },
+      { id: 173, name: 'Whey protein (concentrado 80%)', unit: 'g', kcal100: 362, p: 74, c: 9, f: 5 },
+      { id: 174, name: 'Caseína (proteína)', unit: 'g', kcal100: 357, p: 78, c: 6, f: 2 },
+      { id: 175, name: 'Creatina monoidratada', unit: 'g', kcal100: 0, p: 0, c: 0, f: 0 },
+      { id: 176, name: 'BCAA em pó', unit: 'g', kcal100: 0, p: 0, c: 0, f: 0 },
+
+      // ── ALIMENTOS TIPICAMENTE BRASILEIROS ──
+      { id: 177, name: 'Feijão tropeiro (porção)', unit: 'g', kcal100: 152, p: 8.2, c: 19, f: 5.2 },
+      { id: 178, name: 'Feijoada (porção)', unit: 'g', kcal100: 161, p: 10, c: 12, f: 8 },
+      { id: 179, name: 'Frango xadrez (s/ arroz)', unit: 'g', kcal100: 133, p: 16, c: 7.5, f: 4.2 },
+      { id: 180, name: 'Acaí (polpa pura s/ açúcar)', unit: 'g', kcal100: 70, p: 1.5, c: 4, f: 5 },
+      { id: 181, name: 'Goiabada', unit: 'g', kcal100: 264, p: 0.4, c: 68, f: 0.1 },
+      { id: 182, name: 'Rapadura', unit: 'g', kcal100: 380, p: 0.4, c: 99, f: 0.1 },
+      { id: 183, name: 'Cuscuz com ovo (porção)', unit: 'g', kcal100: 148, p: 7, c: 22, f: 3.5 },
+      { id: 184, name: 'Tapioca com frango e queijo', unit: 'g', kcal100: 162, p: 14, c: 16, f: 4.5 },
+
+      // ── EXTRAS / CONDIMENTOS ──
+      { id: 185, name: 'Azeite de oliva (1 colher = 15ml)', unit: 'ml', kcal100: 884, p: 0, c: 0, f: 100 },
+      { id: 186, name: 'Molho de tomate (industrializado)', unit: 'g', kcal100: 40, p: 1.6, c: 8.5, f: 0.5 },
+      { id: 187, name: 'Molho shoyu (baixo sódio)', unit: 'ml', kcal100: 53, p: 7.7, c: 5, f: 0.1 },
+      { id: 188, name: 'Cacau em pó (100% puro)', unit: 'g', kcal100: 228, p: 20, c: 58, f: 14 },
+      { id: 189, name: 'Chocolate amargo 70%', unit: 'g', kcal100: 546, p: 7, c: 48, f: 36 },
+      { id: 190, name: 'Proteína vegana (ervilha)', unit: 'g', kcal100: 370, p: 80, c: 5, f: 2 },
     ];
+
 
     const BASE_PROTOCOLS = [
       {
         id: 'emagrecimento', name: 'Déficit Calórico 1600kcal', goal: 'emagrecimento',
         desc: 'Déficit moderado, alto teor proteico para preservar massa magra.',
         meals: [
-          { name: 'Café da manhã', foods: [{ id: 17, qty: 50 }, { id: 36, qty: 100 }, { id: 10, qty: 150 }] },
-          { name: 'Lanche manhã', foods: [{ id: 8, qty: 30 }, { id: 39, qty: 100 }] },
-          { name: 'Almoço', foods: [{ id: 1, qty: 150 }, { id: 13, qty: 150 }, { id: 21, qty: 80 }, { id: 30, qty: 10 }] },
-          { name: 'Lanche tarde', foods: [{ id: 5, qty: 120 }, { id: 37, qty: 130 }] },
-          { name: 'Jantar', foods: [{ id: 3, qty: 120 }, { id: 12, qty: 120 }, { id: 23, qty: 60 }] },
+          { name: 'Café da manhã', foods: [{ id: 54, qty: 50 }, { id: 117, qty: 100 }, { id: 35, qty: 150 }] },
+          { name: 'Lanche manhã', foods: [{ id: 31, qty: 30 }, { id: 123, qty: 100 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 150 }, { id: 79, qty: 150 }, { id: 87, qty: 80 }, { id: 143, qty: 10 }] },
+          { name: 'Lanche tarde', foods: [{ id: 27, qty: 120 }, { id: 119, qty: 130 }] },
+          { name: 'Jantar', foods: [{ id: 14, qty: 120 }, { id: 52, qty: 120 }, { id: 89, qty: 60 }] },
         ]
       },
       {
         id: 'hipertrofia', name: 'Bulk Limpo 2800kcal', goal: 'hipertrofia',
         desc: 'Superávit calórico com ênfase em proteína e carboidratos de qualidade.',
         meals: [
-          { name: 'Café da manhã', foods: [{ id: 17, qty: 80 }, { id: 5, qty: 200 }, { id: 41, qty: 200 }, { id: 36, qty: 150 }] },
-          { name: 'Lanche manhã', foods: [{ id: 8, qty: 40 }, { id: 11, qty: 100 }, { id: 32, qty: 30 }] },
-          { name: 'Almoço', foods: [{ id: 2, qty: 180 }, { id: 11, qty: 200 }, { id: 18, qty: 100 }, { id: 25, qty: 100 }] },
-          { name: 'Pré-treino', foods: [{ id: 13, qty: 200 }, { id: 1, qty: 100 }] },
-          { name: 'Pós-treino', foods: [{ id: 8, qty: 40 }, { id: 17, qty: 50 }] },
-          { name: 'Jantar', foods: [{ id: 1, qty: 150 }, { id: 12, qty: 150 }, { id: 21, qty: 80 }] },
-          { name: 'Ceia', foods: [{ id: 10, qty: 200 }, { id: 49, qty: 15 }] },
+          { name: 'Café da manhã', foods: [{ id: 55, qty: 80 }, { id: 27, qty: 200 }, { id: 38, qty: 200 }, { id: 117, qty: 150 }] },
+          { name: 'Lanche manhã', foods: [{ id: 31, qty: 40 }, { id: 51, qty: 100 }, { id: 147, qty: 30 }] },
+          { name: 'Almoço', foods: [{ id: 5, qty: 180 }, { id: 51, qty: 200 }, { id: 63, qty: 100 }, { id: 92, qty: 100 }] },
+          { name: 'Pré-treino', foods: [{ id: 79, qty: 200 }, { id: 1, qty: 100 }] },
+          { name: 'Pós-treino', foods: [{ id: 31, qty: 40 }, { id: 54, qty: 50 }] },
+          { name: 'Jantar', foods: [{ id: 1, qty: 150 }, { id: 52, qty: 150 }, { id: 87, qty: 80 }] },
+          { name: 'Ceia', foods: [{ id: 34, qty: 200 }, { id: 150, qty: 15 }] },
         ]
       },
       {
         id: 'manutencao', name: 'Manutenção 2200kcal', goal: 'manutencao',
         desc: 'Balanço calórico equilibrado para manter peso e composição corporal.',
         meals: [
-          { name: 'Café da manhã', foods: [{ id: 17, qty: 60 }, { id: 5, qty: 120 }, { id: 41, qty: 150 }] },
-          { name: 'Almoço', foods: [{ id: 1, qty: 130 }, { id: 11, qty: 150 }, { id: 18, qty: 80 }, { id: 25, qty: 80 }] },
-          { name: 'Lanche', foods: [{ id: 9, qty: 150 }, { id: 37, qty: 150 }] },
-          { name: 'Jantar', foods: [{ id: 4, qty: 130 }, { id: 13, qty: 150 }, { id: 24, qty: 60 }] },
+          { name: 'Café da manhã', foods: [{ id: 54, qty: 60 }, { id: 27, qty: 120 }, { id: 38, qty: 150 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 130 }, { id: 51, qty: 150 }, { id: 63, qty: 80 }, { id: 92, qty: 80 }] },
+          { name: 'Lanche', foods: [{ id: 43, qty: 150 }, { id: 119, qty: 150 }] },
+          { name: 'Jantar', foods: [{ id: 18, qty: 130 }, { id: 79, qty: 150 }, { id: 91, qty: 60 }] },
         ]
       },
       {
         id: 'definicao', name: 'Cutting 1900kcal', goal: 'definicao',
         desc: 'Déficit pequeno, alta proteína e baixo carboidrato para perder gordura sem perder músculo.',
         meals: [
-          { name: 'Café da manhã', foods: [{ id: 6, qty: 200 }, { id: 17, qty: 40 }, { id: 39, qty: 80 }] },
-          { name: 'Almoço', foods: [{ id: 1, qty: 160 }, { id: 13, qty: 130 }, { id: 21, qty: 80 }, { id: 30, qty: 8 }] },
-          { name: 'Pré-treino', foods: [{ id: 3, qty: 100 }, { id: 37, qty: 130 }] },
-          { name: 'Jantar', foods: [{ id: 7, qty: 140 }, { id: 23, qty: 80 }, { id: 25, qty: 80 }, { id: 31, qty: 60 }] },
+          { name: 'Café da manhã', foods: [{ id: 29, qty: 200 }, { id: 54, qty: 40 }, { id: 123, qty: 80 }] },
+          { name: 'Almoço', foods: [{ id: 1, qty: 160 }, { id: 79, qty: 130 }, { id: 87, qty: 80 }, { id: 143, qty: 8 }] },
+          { name: 'Pré-treino', foods: [{ id: 14, qty: 100 }, { id: 119, qty: 130 }] },
+          { name: 'Jantar', foods: [{ id: 10, qty: 140 }, { id: 89, qty: 80 }, { id: 92, qty: 80 }, { id: 137, qty: 60 }] },
         ]
       },
     ];
